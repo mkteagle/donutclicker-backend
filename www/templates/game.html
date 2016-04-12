@@ -1,0 +1,37 @@
+<ion-view id="mainGame" view-title="Game Play">
+    <ion-content>
+      <div id="fireworks-template">
+        <div id="fw" class="firework"></div>
+        <div id="fp" class="fireworkParticle"><img src="lib/fireworks/fireworks0.9.20050609/image/particles.gif" alt="" /></div>
+      </div>
+        <toast class="toaster"></toast>
+        </div>
+        <div class="row enjoy-css">
+
+            <div class="onehundred">{{ gc.selected.counter }}</div>
+            <span class="onehundreddonuts"><div class="donutstext">donuts</div></span></div>
+        <div class="row">
+            <div class="onehundred"><span class="textsize">{{ gc.selected.countdown }}</span></div>
+            <span class="onehundreddonuts"><span class="textsize">til {{ gc.selected.goal }}</span></span></div>
+        <progress id="progressbar" max="{{gc.selected.goal}}" value="{{ gc.selected.goal - gc.selected.countdown }}"></progress>
+        <div id="progressbarlabel"></div>
+        <div class="main-container">
+          <img class="smalldonut" ng-src="img/greendonut.png">
+            <img class="donut" ng-click="hc.showToast(); gc.incrementCounter(); gc.incrementCountdown()"
+                 ng-src="img/Donut.png" style="height: 350px; width: 345px;" ng-click="createFirework(85,62,2,4,50,45,50,43,false,true);">
+        </div>
+        <div class="toptobottom">
+            <div class="row">
+                <h5>Clickers {{ gc.selected.clicker }}</h5>
+            </div>
+            <div class="row">
+                <h5>Grandpas {{ gc.selected.grandpa }}</h5>
+            </div>
+        </div>
+
+        <div class="button-bar2 social-login">
+            <upgrade-directive></upgrade-directive>
+        </div>
+    </ion-content>
+
+</ion-view>

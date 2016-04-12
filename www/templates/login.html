@@ -1,0 +1,37 @@
+<ion-view id="login" view-title="Login" align-title="left">
+  <ion-content style="background-color: deepskyblue;" class="main-container">
+    <div class="login-card">
+      <img class="app-icon">
+      <h1>Welcome Donut Lovers</h1>
+      <form>
+        <input type="text" name="user" placeholder="Username">
+        <input type="password" name="pass" placeholder="Password" ng-model="vm.email">
+        <input type="submit" name="login" class="login login-submit" value="Login">
+      </form>
+
+      <div class="login-help">
+        <a href="#">Register</a> • <a href="#">Forgot Password</a>
+      </div>
+    </div>
+    <!--<div class="profile__form">-->
+      <!--<div class="profile__fields">-->
+        <!--<label for="emailForm" class="label">Email</label>-->
+        <!--<input id="emailForm" class="input larger" ng-model="vm.email"-->
+               <!--highlight-color="balanced" type="text">-->
+        <!--<label for="passwordForm" class="label">Password</label>-->
+        <!--<input id="passwordForm" class="input larger" highlight-color="energized"-->
+               <!--ng-model="vm.password" type="password">-->
+      <!--</div>-->
+    <!--</div>-->
+    <div class="row">
+      <button class="button button-full button-positive" ng-click="lc.facebookLogin()">
+        Facebook Login
+      </button>
+    </div>
+    <div class="row">
+      <button class="button button-full button-assertive" ng-click="lc.googleLogin()">
+        Google Login
+      </button>
+    </div>
+  </ion-content>
+</ion-view>

@@ -1,0 +1,21 @@
+<ion-view id="mainGame" view-title="Leader Board" ng-controller="gameController as hc">
+    <ion-content>
+
+        <table class="table table-striped">
+        <h2>Top Players</h2>
+            <thead>
+            <tr>
+                <th>Player</th>
+                <th>Score</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="item in hc.gameService.childData | toArray | orderBy:'-gameplay.counter' | limitTo: '10'">
+                <th>{{item.name | initials }}</th>
+                <th>{{item.gameplay.counter}}</th>
+            </tr>
+            </tbody>
+            </table>
+        </div>
+        </ion-content>
+    </ion-view>

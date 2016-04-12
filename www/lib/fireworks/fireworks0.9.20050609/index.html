@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Fireworks.js: A DHTML fireworks effect</title>
+<meta name="author" content="Scott Schiller" />
+<meta name="language" content="en-us" />
+<meta name="keywords" content="Fireworks.js DHTML animated fireworks effect free animation script" />
+<meta name="description" content="Project page for Fireworks, a fun and downloadable javascript-driven animated fireworks experiment." />
+<link rel="stylesheet" type="text/css" href="style/fireworks.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="demo-only/demo.css" media="screen" />
+<script type="text/javascript" src="demo-only/demo.js"></script>
+<!--script type="text/javascript" src="script/debug.js"></script-->
+<script type="text/javascript" src="script/soundmanager.js"></script>
+<script type="text/javascript" src="script/fireworks.js"></script>
+</head>
+
+<body>
+
+<!--
+
+ Fireworks elements (cloned and animated via script):
+
+ #sound
+ #fireworks-template
+ #fireContainer
+
+ #sound is optional and can be omitted (as can the related .js.)
+
+-->
+
+<div id="sound">
+
+</div>
+
+<div id="fireworks-template">
+ <div id="fw" class="firework"></div>
+ <div id="fp" class="fireworkParticle"><img src="image/particles.gif" alt="" /></div>
+</div>
+
+<div id="fireContainer"></div>
+
+<!-- demo page stuff -->
+
+ <ul>
+
+  <li><a href="#" onclick="createFirework(100,100,1,null,50,100,50,50,false,true);return false" title="I swear it looks like the Apple key, really!">Apple Key-esque</a></li>
+  <li><a href="#" onclick="createFirework(11,30,3,4,null,null,null,null,false,true);return false" title="Standard-issue.">Standard Circle</a></li>
+  <li><a href="#" onclick="createFirework(25,187,5,1,null,null,null,null,false,true);return false" title="The usual, a bit more filled-out.">Concentric Circles</a></li>
+  <li><a href="#" onclick="createFirework(66,139,4,5,1,1,97,96,true,true);return false" title="Nowhere else to go but up and out.">Cornered</a></li>
+  <li><a href="#" onclick="createFirework(38,128,2,null,49,2,50,100,false,true);return false" title="Particles bounce from the bottom.">Semicircle</a></li>
+  <li><a href="#" onclick="createFirework(100,800,8,5,1,100,50,50,false,false);return false" title="Give this one time to start..">CPU-heavy</a></li>
+  <li><a href="#" onclick="var r=4+parseInt(Math.random()*16);for(var i=r; i--;){setTimeout('createFirework(8,14,2,null,null,null,null,null,Math.random()>0.5,true)',(i+1)*(1+parseInt(Math.random()*1000)));}return false" title="A number of randomly-timed explosions.">Sequence: Explosions</a></li>
+
+ </ul>
+
+
+
+<script type="text/javascript">
+if (typeof(soundManagerInit)!='undefined') soundManagerInit();
+</script>
+
+</body>
+</html>
