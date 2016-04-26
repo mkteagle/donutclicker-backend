@@ -19,12 +19,10 @@
 
             function clickedAutoClicker() {
                 uc.recorded.clicker = gameService.incrementClicker();
-                gameService.gameState();
             }
 
             function clickGrandpa() {
                 uc.recorded.grandpa = gameService.clickGrandpa();
-                gameService.gameState();
             }
 
             $interval(function () {
@@ -36,7 +34,6 @@
                 else {
                     uc.recorded.countdown = uc.recorded.countdown - uc.recorded.clicker - uc.recorded.grandpa;
                 }
-                gameService.gameState();
             }, 1000)
         };
         return {

@@ -3,10 +3,10 @@
     angular.module('gameService', [])
         .service('gameService', gameService);
 
-    gameService.$inject = ['ngToast', '$timeout', '$state', '$ionicHistory', '$ionicSideMenuDelegate'];
+    gameService.$inject = ['ngToast', '$timeout', '$state', '$ionicHistory', '$ionicSideMenuDelegate', '$filter'];
 
 
-    function gameService(ngToast, $timeout, $state, $ionicHistory, $ionicSideMenuDelegate) {
+    function gameService(ngToast, $timeout, $state, $ionicHistory, $ionicSideMenuDelegate, $filter) {
         var self = this;
         self.incrementCounter = incrementCounter;
         self.updated = 100;
@@ -26,6 +26,22 @@
         // self.authWithPassword = authWithPassword;
         // self.leaderboard = leaderboard;
         self.showError = showError;
+        self.shuffleArray = shuffleArray;
+        self.imgArray = [
+            {'img': '../www/img/hotpinkdonut.png', 'enabled': true},
+            {'img': '../www/img/bluedonut.png', 'enabled': false},
+            {'img': '../www/img/greendonut.png', 'enabled': false},
+            {'img': '../www/img/lightbluedonut.png', 'enabled': false},
+            {'img': '../www/img/orangedonut.png', 'enabled': false},
+            {'img': '../www/img/whitedonut.png', 'enabled': false},
+            {'img': '../www/img/yellowdonut.png', 'enabled': false},
+            {'img': '../www/img/chocolatedonut.png', 'enabled': false},
+            {'img': '../www/img/blackdonut.png', 'enabled': false},
+            {'img': '../www/img/lightpinkdonut.png', 'enabled': false}
+        ];
+        function shuffleArray () {
+            self.shuffledArray = $filter('shuffle')(self.imgArray);
+        }
 
         for (var i = 1; i < 1000; i++) {
             self.upgrades.push({id: i, goal: self.goal});
@@ -42,13 +58,16 @@
             cost: 100,
             gcost: 1000
         };
-        // self.init = init;
-        // init();
+        self.init = init;
+        init();
         function showError(error) {
             ngToast.create({
                 className: 'failure',
                 content: error
             });
+        }
+        function init() {
+            self.shuffleArray();
         }
         // function logout() {
         //     $timeout(function() {
@@ -159,7 +178,6 @@
             self.recorded.counter = self.recorded.counter - self.recorded.cost;
             self.recorded.countdown = self.recorded.goal - self.recorded.counter;
             self.recorded.cost = self.recorded.cost * 2;
-            self.gameState();
             return self.recorded.clicker;
 
         }
@@ -169,25 +187,21 @@
             self.recorded.counter = self.recorded.counter - self.recorded.gcost;
             self.recorded.countdown = self.recorded.goal - self.recorded.counter;
             self.recorded.gcost = self.recorded.gcost * 2;
-            self.gameState();
             return self.recorded.grandpa;
         }
 
         function incrementCountdown() {
             if (self.recorded.countdown <= 0) {
                 self.recorded.upgrade = true;
-                self.gameState();
                 return self.recorded.countdown = 0;
             }
             else if (self.recorded.counter < self.upgrades[self.recorded.index].goal) {
                 self.recorded.countdown = self.recorded.countdown - Number(self.upgrades[self.recorded.index].id);
-                self.gameState();
                 return self.recorded.countdown;
             }
             else {
                 self.recorded.upgrade = true;
                 self.recorded.countdown = self.recorded.countdown - Number(self.upgrades[self.recorded.index].id);
-                self.gameState();
                 return self.recorded.countdown;
             }
         }
@@ -199,20 +213,17 @@
             self.recorded.countdown = self.upgrades[self.recorded.index].goal;
             self.recorded.goal = self.upgrades[self.recorded.index].goal;
             self.recorded.level = self.upgrades[self.recorded.index].id + 'x';
-            self.gameState();
         }
 
         function incrementCounter() {
             if (self.recorded.counter < self.upgrades[self.recorded.index].goal) {
                 self.recorded.counter = self.recorded.counter + self.upgrades[self.recorded.index].id;
                 self.showToast();
-                self.gameState();
                 return self.recorded.counter;
             }
             else {
                 self.recorded.counter = self.recorded.counter + self.upgrades[self.recorded.index].id;
                 self.showToast();
-                self.gameState();
                 return self.recorded.counter;
             }
 

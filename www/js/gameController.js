@@ -24,7 +24,6 @@
         //});
         self.incrementCounter = incrementCounter;
         self.level = gameService.level;
-        self.getChange = getChange;
         self.selected = gameService.recorded;
         self.user = gameService.user;
         self.selectPlayer = selectPlayer;
@@ -44,9 +43,6 @@
         }
         function selectPlayer () {
             gameService.selectPlayer();
-        }
-        function getChange () {
-            gameService.gameState();
         }
         function incrementCountdown() {
             self.selected.countdown = gameService.incrementCountdown();
