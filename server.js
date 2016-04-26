@@ -7,7 +7,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
-var url = 'mongodb://54.191.202.80:27017/donut-clicker';
+var url = 'mongodb://mkteagle:Password01@ds013221.mlab.com:13221/donutclicker';
 app.use('/', express.static(__dirname + '/www'));
 app.use('/node_modules', express.static(__dirname + '/node_modules'));
 app.use('/api', router);
