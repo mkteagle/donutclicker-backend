@@ -44,7 +44,7 @@
             controller: upgradeController,
             controllerAs: 'uc',
             bindToController: true,
-            templateUrl: '..//www/templates/upgrades.html'
+            templateUrl: '../www/templates/upgrades.html'
         };
     }
 })();
