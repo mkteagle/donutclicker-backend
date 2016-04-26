@@ -11,7 +11,7 @@ var url = 'mongodb://mkteagle:Password01@ds013221.mlab.com:13221/donutclicker';
 app.use('/', express.static(__dirname + '/www'));
 app.use('/node_modules', express.static(__dirname + '/node_modules'));
 app.use('/api', router);
-var port = (process.env.PORT || 80);
+var port = (process.env.PORT || 8080);
 
 app.listen(port, function() {
   console.log(`App listening on port ${port}...`);
