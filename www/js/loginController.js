@@ -11,9 +11,12 @@ function loginController(gameService) {
     vm.googleLogin = googleLogin;
     vm.authWithPassword = authWithPassword;
     vm.createUser = createUser;
+    vm.addPlayer = addPlayer;
     vm.email = '';
     vm.password = '';
-
+    function addPlayer() {
+        gameService.addPlayer();
+    }
     function facebookLogin() {
         gameService.facebookLogin();
         vm.email = '';

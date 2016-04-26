@@ -36,10 +36,19 @@
         self.incrementCountdown = incrementCountdown;
         self.loginData = {};
         self.logout = logout;
+        self.addPlayer = addPlayer;
         self.gameService = gameService;
+        self.initPlayer = initPlayer;
+        
+        function initPlayer () {
+            self.user = gameService.retrievePlayer();
+        }
 
         function playSound () {
             ion.sound.play("snap");
+        }
+        function addPlayer() {
+            self.gameService.addPlayer();
         }
         function selectPlayer () {
             gameService.selectPlayer();
