@@ -1,8 +1,8 @@
 (function () {
     angular.module('app.login', [])
 .controller('loginController', loginController);
-    loginController.$inject = ['gameService'];
-function loginController(gameService) {
+    loginController.$inject = ['gameService', '$http'];
+function loginController(gameService, $http) {
     // controller data and functions
     var vm = this;
     vm.authData = gameService.user;
@@ -18,9 +18,11 @@ function loginController(gameService) {
         gameService.addPlayer();
     }
     function facebookLogin() {
-        gameService.facebookLogin();
-        vm.email = '';
-        vm.password = '';
+        $http.get('/auth/facebook');
+    //function facebookLogin() {
+    //    gameService.facebookLogin();
+    //    vm.email = '';
+    //    vm.password = '';
     }
     function googleLogin() {
         gameService.googleLogin();
