@@ -22,12 +22,14 @@ var user = {};
 
 /////////// GOOGLE LOGIN
 passport.use(new GoogleStrategy({
-        clientID: "1008112784060-l5nqpjmb1d177tkjugl00upv0gk0rdth.apps.googleusercontent.com",
-        clientSecret: "nRsoollVg_N0k3EiCQu1cWjw",
-        callbackURL: "http://localhost:5000/auth/google/callback"
+        clientID: "829492191243-v8ft9f21p29flncurno9h3hgnsealst4.apps.googleusercontent.com",
+        clientSecret: "oxzGcR_ic7p3R49XRwPxM79f",
+        callbackURL: "http://localhost:3000/auth/google/callback"
     },
     function(accessToken, refreshToken, profile, done) {
         console.log("logged in");
+        console.log(profile);
+        
         return done(null, profile);
     }
 ));
@@ -38,7 +40,7 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
     passport.authenticate('google', {failureRedirect: '/index.html#/app/login'}),
     function(req, res) {
-        res.redirect('http://localhost:5000/#/app/game');
+        res.redirect('http://localhost:3000/#/app/game');
     });
 
 /////////// FACEBOOK LOGIN
