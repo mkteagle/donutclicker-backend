@@ -35,7 +35,6 @@ app.get('/auth/google/callback',
     });
 
 
-
 /////////// FACEBOOK LOGIN
 passport.use(new FacebookStrategy({
         clientID: 1517975181838329,

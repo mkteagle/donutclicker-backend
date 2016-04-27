@@ -81,6 +81,9 @@
             self.recorded.goal = self.upgrades[self.recorded.index].goal;
             self.recorded.level = self.upgrades[self.recorded.index].id + 'x';
             self.user.gameplay = self.recorded;
+            self.$http.put('/api/updatePlayer', self.user).then(function(response){
+                self.user = response.data;
+            })
 
         }
         function showError(error) {
