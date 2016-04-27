@@ -15,12 +15,31 @@ app.use('/api', router);
 var port = (process.env.PORT || 3000);
 var passport = require('passport'),
     FacebookStrategy = require('passport-facebook').Strategy,
-    LocalStrategy = require('passport-local').Strategy;
+    LocalStrategy = require('passport-local').Strategy,
+    GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 app.use(passport.initialize());
 var user = {};
 
 /////////// GOOGLE LOGIN
+passport.use(new GoogleStrategy({
+        clientID: "1008112784060-l5nqpjmb1d177tkjugl00upv0gk0rdth.apps.googleusercontent.com",
+        clientSecret: "nRsoollVg_N0k3EiCQu1cWjw",
+        callbackURL: "http://localhost:5000/auth/google/callback"
+    },
+    function(accessToken, refreshToken, profile, done) {
+        console.log("logged in");
+        return done(null, profile);
+    }
+));
 
+app.get('/auth/google',
+    passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }));
+
+app.get('/auth/google/callback',
+    passport.authenticate('google', {failureRedirect: '/index.html#/app/login'}),
+    function(req, res) {
+        res.redirect('http://localhost:5000/#/app/game');
+    });
 
 /////////// FACEBOOK LOGIN
 passport.use(new FacebookStrategy({
