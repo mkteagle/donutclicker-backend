@@ -8,20 +8,20 @@
     function gameController(gameService, $timeout) {
         var self = this;
         //I got this code here: http://ionden.com/a/plugins/ion.sound/en.html to make the sound for the button
-        //ion.sound({
-        //    sounds: [
-        //        {
-        //            alias: "snap",
-        //            name: "snap",
-        //            path: "../www/lib/ion-sound/sounds/",
-        //            volume: 0.9,
-        //            preload: false
-        //        }
-        //    ],
-        //    path: "../www/lib/ion-sound/sounds/",
-        //    preload: true,
-        //    multiplay: true
-        //});
+        ion.sound({
+           sounds: [
+               {
+                   alias: "snap",
+                   name: "snap",
+                   path: "../www/lib/ion-sound/sounds/",
+                   volume: 0.9,
+                   preload: false
+               }
+           ],
+           path: "../www/lib/ion-sound/sounds/",
+           preload: true,
+           multiplay: true
+        });
         self.incrementCounter = incrementCounter;
         self.level = gameService.level;
         self.selected = gameService.recorded;

@@ -9,7 +9,6 @@ app.use(passport.initialize());
 
 /////////// GOOGLE LOGIN
 
-
 /////////// FACEBOOK LOGIN
 passport.use(new FacebookStrategy({
         clientID: 1517975181838329,
