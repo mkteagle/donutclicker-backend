@@ -26,15 +26,16 @@
       <div class="row">
           <button class="button button-full button-calm" ng-click="lc.addPlayer()">Add Player</button>
       </div>
+
     <div class="row">
-      <button class="button button-full button-positive" ng-click="lc.facebookLogin()">
-        Facebook Login
-      </button>
+      <a href="/auth/facebook"><button class="button button-small button-border icon-left ion-social-facebook button-positive-900">Facebook</button></a>
     </div>
+
     <div class="row">
-      <button class="button button-full button-assertive" ng-click="lc.googleLogin()">
-        Google Login
-      </button>
+      <a href="/auth/google"><button class="button button-full button-assertive" ng-click="lc.googleLogin()">Google</button></a>
+      <!--<button class="button button-full button-assertive" ng-click="lc.googleLogin()">-->
+        <!--Google Login-->
+      <!--</button>-->
     </div>
   </ion-content>
 </ion-view>

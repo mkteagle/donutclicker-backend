@@ -19,15 +19,9 @@ function loginController(gameService, $http) {
     }
     function facebookLogin() {
         $http.get('/auth/facebook');
-    //function facebookLogin() {
-    //    gameService.facebookLogin();
-    //    vm.email = '';
-    //    vm.password = '';
     }
     function googleLogin() {
-        gameService.googleLogin();
-        vm.email = '';
-        vm.password = '';
+        $http.get('/auth/google');
     }
     function createUser() {
         gameService.createUser(vm.email, vm.password);
