@@ -3,7 +3,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var router = express.Router();
 var ObjectId = require('mongodb').ObjectID;
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
@@ -15,12 +15,50 @@ app.use('/api', router);
 var port = (process.env.PORT || 3000);
 var passport = require('passport'),
     FacebookStrategy = require('passport-facebook').Strategy,
-    LocalStrategy = require('passport-local').Strategy;
+    LocalStrategy = require('passport-local').Strategy,
+    GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 app.use(passport.initialize());
-var user = {};
+//
 
 /////////// GOOGLE LOGIN
+passport.use(new GoogleStrategy({
+        clientID: "829492191243-v8ft9f21p29flncurno9h3hgnsealst4.apps.googleusercontent.com",
+        clientSecret: "oxzGcR_ic7p3R49XRwPxM79f",
+        callbackURL: "http://localhost:3000/auth/google/callback"
+    },
+    function (accessToken, refreshToken, profile, done) {
+        console.log("logged in");
+        console.log(profile);
+        MongoClient.connect(url, function (err, db) {
+            assert.equal(null, err);
+            checkforDuplicates(db, profile.id, function (foundUser, user) {
+                if (!foundUser) {
+                    user = {
+                        _id: profile.id,
+                        name: profile.displayName,
+                        picture: profile.photos[0].value
+                    };
+                    console.log(user);
+                    insertPlayer(db, user, function () {
+                        db.close();
+                    })
+                }
+            });
+        });
 
+
+        return done(null, profile);
+    }
+));
+
+app.get('/auth/google',
+    passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}));
+
+app.get('/auth/google/callback',
+    passport.authenticate('google', {failureRedirect: '/index.html#/app/login'}),
+    function (req, res) {
+        res.redirect('http://localhost:3000/#/app/game');
+    });
 
 /////////// FACEBOOK LOGIN
 passport.use(new FacebookStrategy({
@@ -29,25 +67,29 @@ passport.use(new FacebookStrategy({
         callbackURL: "http://localhost:3000/auth/facebook/callback",
         profileFields: ['id', 'displayName', 'email', 'picture.type(large)']
     },
-    function(accessToken, refreshToken, profile, done) {
+    function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
         console.log(profile);
-        user = {
-            id: profile._json.id,
-            name: profile._json.name,
-            picture: JSON.stringify(profile.photos[0].value)
-        };
-        MongoClient.connect(url, function (err, db) {
+        MongoClient.connect(profile.id, function (err, db) {
             assert.equal(null, err);
-            insertPlayer(db,  user, function () {
-                db.close();
-            })
+            checkforDuplicates(db, profile.id, function (foundUser, user) {
+                if (!foundUser) {
+                    user = {
+                        _id: profile.id,
+                        name: profile.displayName,
+                        picture: profile.photos[0].value
+                    };
+                    console.log(user);
+                    insertPlayer(db, user, function () {
+                        db.close();
+                    })
+                }
+            });
         });
-        console.log(user);
         return done(null, profile);
     }
 ));
-passport.serializeUser(function(user, cb) {
+passport.serializeUser(function (user, cb) {
     cb(null, user);
 });
 
@@ -57,7 +99,7 @@ app.get('/auth/facebook/callback',
 
         failureRedirect: '/index.html#/app/login'
     }),
-    function(req, res) {
+    function (req, res) {
         res.redirect('http://localhost:3000/#/app/game');
     });
 
@@ -67,7 +109,7 @@ passport.use(new LocalStrategy({
         usernameField: 'email',
         passwordField: 'passwd'
     },
-    function(username, password, done) {
+    function (username, password, done) {
         return done(null, user);
     }
 ));
@@ -75,37 +117,60 @@ passport.use(new LocalStrategy({
 app.post('/app.login',
     passport.authenticate('local',
         {
-            successRedirect:'/',
+            successRedirect: '/',
             failureRedirect: '/login',
             successFlash: 'Welcome!',
             failureFlash: true, message: 'Invalid username or password.',
             session: false
         }),
-    function(req, res){
+    function (req, res) {
         res.redirect('/users/' + req.user.username);
         res.json({
             id: req.user.id,
             username: req.user.username
         });
     });
-function insertPlayer(db, user, callback ) {
-    db.collection('users').insertOne(user, function(err, result) {
+function insertPlayer(db, user, callback) {
+    db.collection('users').insertOne(user, function (err, result) {
         assert.equal(err, null);
         console.log('Inserted a document into the users collection');
         callback();
     })
 }
-router.route('/addPlayer')
-    .post(function(req, res) {
+function checkforDuplicates(db, user, callback) {
+    db.collection('users').findOne({'_id': user}, function (err, result) {
+        console.log(result);
+        assert.equal(err, null);
+        var foundUser = false;
+        if (result != undefined || result != null) {
+            foundUser = true;
+            console.log('User Found!!');
+            console.log(result);
+        }
+        var user = result;
+        console.log(user);
+        callback(foundUser, user);
+    })
+}
+function findPlayer(db, user, callback) {
+    db.collection('users').findOne({'_id': user}, function (err, result) {
+        console.log(result);
+        assert.equal(err, null);
+        user = result;
+        callback(user);
+    })
+}
+router.route('/initPlayer')
+    .get(function (req, res) {
         MongoClient.connect(url, function (err, db) {
             assert.equal(null, err);
-            insertPlayer(db,  req.body, function () {
+            findPlayer(db, user._id, function (user) {
                 db.close();
-                res.end();
+                res.json(user);
             })
         })
     });
 
-app.listen(port, function() {
-  console.log(`App listening on port ${port}...`);
+app.listen(port, function () {
+    console.log(`App listening on port ${port}...`);
 });
