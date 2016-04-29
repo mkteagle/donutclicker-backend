@@ -153,6 +153,9 @@
     }
 
 })();
+
+
+
 // self.$http.put('/api/updatePlayer', self.user).then(function(response) {
 //     self.user = response.data;
 // })

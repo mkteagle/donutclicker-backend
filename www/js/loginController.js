@@ -24,6 +24,7 @@ function loginController(gameService, $http) {
     }
     function googleLogin() {
         location.href = "/auth/google";
+        $http.get('/auth/facebook');
     }
     function createUser() {
         gameService.createUser(vm.email, vm.password);
