@@ -18,7 +18,8 @@ var passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
     GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 app.use(passport.initialize());
-//
+// I need to store user.id in a cookie on the server using res.cookie on something. On the client I need to get the cookie
+//using ng cookies
 
 /////////// GOOGLE LOGIN
 passport.use(new GoogleStrategy({
