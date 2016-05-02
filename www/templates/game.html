@@ -8,12 +8,12 @@
         </div>
         <div class="row enjoy-css">
 
-            <div class="onehundred">{{ gc.selected.counter }}</div>
+            <div class="onehundred">{{ gc.recorded.counter }}</div>
             <span class="onehundreddonuts"><div class="donutstext">donuts</div></span></div>
         <div class="row">
-            <div class="onehundred"><span class="textsize">{{ gc.selected.countdown }}</span></div>
-            <span class="onehundreddonuts"><span class="textsize">til {{ gc.selected.goal }}</span></span></div>
-        <progress id="progressbar" max="{{gc.selected.goal}}" value="{{ gc.selected.goal - gc.selected.countdown }}"></progress>
+            <div class="onehundred"><span class="textsize">{{ gc.recorded.countdown }}</span></div>
+            <span class="onehundreddonuts"><span class="textsize">til {{ gc.recorded.goal }}</span></span></div>
+        <progress id="progressbar" max="{{gc.recorded.goal}}" value="{{ gc.recorded.goal - gc.recorded.countdown }}"></progress>
         <div id="progressbarlabel"></div>
         <div class="main-container">
             <div ng-repeat="image in gc.gameService.shuffledArray" ng-class="{donut: image.enabled}">
@@ -22,15 +22,15 @@
         </div>
         <div class="toptobottom">
             <div class="row">
-                <h5>Clickers {{ gc.selected.clicker }}</h5>
+                <h5>Clickers {{ gc.recorded.clicker }}</h5>
             </div>
             <div class="row">
-                <h5>Grandpas {{ gc.selected.grandpa }}</h5>
+                <h5>Grandpas {{ gc.recorded.grandpa }}</h5>
             </div>
         </div>
 
         <div class="button-bar2 social-login">
-            <upgrade-directive></upgrade-directive>
+            <div ng-include="'../templates/upgrades.html'">
         </div>
         <div>{{ gc.user.name }}</div>
     </ion-content>

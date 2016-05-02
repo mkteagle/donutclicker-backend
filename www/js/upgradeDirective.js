@@ -5,11 +5,6 @@
     function upgradeDirective (gameService, $timeout, $interval) {
         var upgradeController = function () {
             var uc = this;
-            uc.recorded = gameService.recorded;
-            //uc.upgrades = [];
-            uc.gindex = gameService.recorded.gindex;
-            uc.cost = gameService.recorded.cost;
-            uc.gcost = gameService.recorded.gcost;
             uc.clickedAutoClicker = clickedAutoClicker;
             uc.upgradePlayer = upgradePlayer;
             uc.clickGrandpa = clickGrandpa;
@@ -17,25 +12,7 @@
                 gameService.updatePlayer();
             }
 
-            function clickedAutoClicker() {
-                uc.recorded.clicker = gameService.incrementClicker();
-            }
-
-            function clickGrandpa() {
-                uc.recorded.grandpa = gameService.clickGrandpa();
-            }
-
-            $interval(function () {
-                uc.recorded.counter += uc.recorded.clicker;
-                uc.recorded.counter += uc.recorded.grandpa;
-                if (uc.recorded.countdown <= 0) {
-                    uc.recorded.countdown = 0
-                }
-                else {
-                    uc.recorded.countdown = uc.recorded.countdown - uc.recorded.clicker - uc.recorded.grandpa;
-                }
-            }, 1000)
-        };
+            
         return {
             restrict: 'EA',
             controller: upgradeController,
