@@ -3,9 +3,9 @@
 
     angular.module('gameController', [])
         .controller('gameController', gameController);
-    gameController.$inject = ['gameService', '$timeout'];
+    gameController.$inject = ['gameService', '$timeout', '$http'];
 
-    function gameController(gameService, $timeout) {
+    function gameController(gameService, $timeout, $http) {
         var self = this;
         //I got this code here: http://ionden.com/a/plugins/ion.sound/en.html to make the sound for the button
         ion.sound({
@@ -24,8 +24,9 @@
         });
         self.incrementCounter = incrementCounter;
         self.level = gameService.level;
+        self.$http = $http;
         self.selected = gameService.recorded;
-        self.user = gameService.user;
+        self.user = {};
         self.selectPlayer = selectPlayer;
         self.countdown = gameService.recorded.countdown;
         self.counter = gameService.recorded.counter;
@@ -34,15 +35,16 @@
         self.updatePlayer = updatePlayer;
         self.playSound = playSound;
         self.incrementCountdown = incrementCountdown;
-        self.loginData = {};
         self.logout = logout;
         self.addPlayer = addPlayer;
         self.gameService = gameService;
         self.initPlayer = initPlayer;
         
         function initPlayer () {
-            self.user = gameService.retrievePlayer();
-            console.log(self.user);
+            self.$http.get('/api/initPlayer').then(function(response){
+                self.user = response.data;
+                console.log(self.user);
+            });
         }
 
         function playSound () {
