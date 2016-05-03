@@ -42,6 +42,7 @@
         
         function initPlayer () {
             self.user = gameService.retrievePlayer();
+            console.log(self.user);
         }
 
         function playSound () {

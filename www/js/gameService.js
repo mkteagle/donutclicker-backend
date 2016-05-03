@@ -39,6 +39,10 @@
             {'img': '../img/lightpinkdonut.png', 'enabled': false}
         ];
         function retrievePlayer () {
+            self.$http.get('/api/initPlayer').then(function(response){
+                self.user = response.data;
+                console.log(self.user);
+            });
             return self.user;
         }
         function shuffleArray () {
