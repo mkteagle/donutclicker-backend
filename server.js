@@ -185,32 +185,15 @@ router.route('/initPlayer')
     });
 
 app.listen(port, function () {
-    console.log(`App listening on port ${port}...`);
+    console.log("App listening on port ${port}...");
 });
-
-
-/////////// PASSPORTJS
-
-var express = require('express');
-var app = express();
-const fs = require('fs');
-var passport = require('passport'),
-    FacebookStrategy = require('passport-facebook').Strategy,
-    LocalStrategy = require('passport-local').Strategy;
-
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-
-
-app.use('/', express.static(__dirname + '/www'));
-app.use(passport.initialize());
-
 
 
 /////////// GOOGLE LOGIN
 passport.use(new GoogleStrategy({
         clientID: "1008112784060-l5nqpjmb1d177tkjugl00upv0gk0rdth.apps.googleusercontent.com",
         clientSecret: "nRsoollVg_N0k3EiCQu1cWjw",
-        callbackURL: "http://localhost:5000/auth/google/callback"
+        callbackURL: "http://localhost:3000/auth/google/callback"
     },
     function(accessToken, refreshToken, profile, done) {
         console.log("logged in");
@@ -224,7 +207,7 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
     passport.authenticate('google', {failureRedirect: '/index.html#/app/login'}),
     function(req, res) {
-        res.redirect('http://localhost:5000/#/app/game');
+        res.redirect('http://localhost:3000/#/app/game');
     });
 
 
@@ -232,7 +215,7 @@ app.get('/auth/google/callback',
 passport.use(new FacebookStrategy({
         clientID: 1517975181838329,
         clientSecret: "c7dcea90211ffb1becb1ae665cb2b33c",
-        callbackURL: "http://localhost:5000/auth/facebook/callback",
+        callbackURL: "http://localhost:3000/auth/facebook/callback",
         profileFields: ['id', 'displayName', 'photos', 'email']
     },
     function(accessToken, refreshToken, profile, done) {
@@ -251,12 +234,13 @@ app.get('/auth/facebook/callback',
         failureRedirect: '/index.html#/app/login'
     }),
     function(req, res) {
-        res.redirect('http://localhost:5000/#/app/game');
+        res.redirect('http://localhost:3000/#/app/game');
     });
 
 
 
 /////////// EMAIL & PASSWORD LOGIN
+
 passport.use(new LocalStrategy({
         usernameField: 'email',
         passwordField: 'passwd'
@@ -276,9 +260,15 @@ app.post('/app.login',
             session: false
         }),
     function(req, res){
-        res.redirect('/users/' + req.user.username);
+        res.redirect('/http://localhost:3000/#/app/game/' + req.user.username);
         res.json({
-            id: req.user.id,
+            _id: req.user.id,
             username: req.user.username
         });
     });
+
+
+app.get('/logout', function(req, res){
+    req.logout();
+    res.redirect('/');
+});

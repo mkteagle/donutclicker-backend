@@ -17,6 +17,7 @@ function AppCtrl ($state, gameService, $ionicSideMenuDelegate, $ionicHistory) {
     self.hasHeaderFabRight = false;
     self.img = gameService.img;
     self.logout = logout;
+    self.login = login;
     self.gameService = gameService;
     self.getUser = gameService.getUser;
     self.leaderboard = leaderboard;
@@ -30,10 +31,18 @@ function AppCtrl ($state, gameService, $ionicSideMenuDelegate, $ionicHistory) {
             this.classList.toggle('active');
         });
     }
+    function login() {
+        location.href = "/#/app/game";
+        $ionicSideMenuDelegate.toggleRight();
+        $ionicSideMenuDelegate.canDragContent(true);
+        $ionicHistory.nextViewOptions({historyRoot: true});
+        $state.go('app.game');
+        self.gameService.isLoggedIn = true;
+    }
     function logout() {
-        gameService.logout();
+        location.href = "/logout";
         $ionicSideMenuDelegate.toggleLeft();
-        $ionicSideMenuDelegate.canDragContent(false)
+        $ionicSideMenuDelegate.canDragContent(false);
         $ionicHistory.nextViewOptions({historyRoot: true});
         $state.go('app.login');
         self.gameService.isLoggedIn = false;
