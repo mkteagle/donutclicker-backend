@@ -1,4 +1,4 @@
-<ion-view id="mainGame" view-title="Game Play">
+<ion-view id="mainGame" view-title="Game Play" ng-init="gc.initPlayer()">
     <ion-content>
         <div id="fireworks-template">
             <div id="fw" class="firework"></div>
@@ -32,6 +32,7 @@
         <div class="button-bar2 social-login">
             <upgrade-directive></upgrade-directive>
         </div>
+        <div>{{ gc.user.name }}</div>
     </ion-content>
 
 </ion-view>
