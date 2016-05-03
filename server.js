@@ -74,7 +74,8 @@ passport.use(new FacebookStrategy({
     },
     function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
-        MongoClient.connect(profile.id, function (err, db) {
+        console.log(profile);
+        MongoClient.connect(url, function (err, db) {
             assert.equal(null, err);
             checkforDuplicates(db, profile.id, function (foundUser, user) {
                 if (!foundUser) {
@@ -97,13 +98,6 @@ passport.serializeUser(function(user, done) {
 });
 passport.deserializeUser(function(id, done) {
     done(null, id);
-    // console.log(id);
-    // MongoClient.connect(url, function(err, db) {
-    //     assert.equal(null, err);
-    //     db.collection('users').findById(id, function(err, user) {
-    //         done(err, user);
-    //     })
-    // });
 });
 
 
@@ -171,6 +165,14 @@ function findPlayer(db, user, callback) {
         callback(user);
     })
 }
+function savePlayer(db, user, callback) {
+    db.collection('users').replaceOne({'_id': user._id}, user, function (err, result) {
+        assert.equal(err, null);
+        if (err) throw err;
+        console.log('Updated Player');
+        callback(user);
+    })
+}
 router.route('/initPlayer')
     .get(function (req, res) {
         console.log(req.user);
@@ -178,6 +180,17 @@ router.route('/initPlayer')
         MongoClient.connect(url, function (err, db) {
             assert.equal(null, err);
             findPlayer(db, id, function (user) {
+                db.close();
+                res.json(user);
+            })
+        })
+    });
+router.route('/savePlayer')
+    .put(function(req, res){
+        console.log(req.body);
+        MongoClient.connect(url, function (err, db) {
+            assert.equal(null, err);
+            savePlayer(db, req.body, function (user) {
                 db.close();
                 res.json(user);
             })
