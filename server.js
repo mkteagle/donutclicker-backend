@@ -259,7 +259,7 @@ passport.use(new LocalStrategy({
         passwordField: 'passwd'
     },
     function(username, password, done) {
-        return done(null, user);
+        return done(null, username);
     }
 ));
 
@@ -273,11 +273,12 @@ app.post('/app.login',
             session: false
         }),
     function(req, res){
-        res.redirect('/http://localhost:3000/#/app/game/' + req.user.username);
-        res.json({
-            _id: req.user.id,
+        var user = {
+            _id: req.user.username,
             username: req.user.username
-        });
+        }
+        res.redirect('/http://localhost:3000/#/app/game/' + req.user.username);
+        res.json({user});
     });
 
 
