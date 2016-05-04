@@ -27,7 +27,7 @@
         self.user = {};
         self.goal = 1000;
         self.updated = 100;
-        self.updatePlayer = updatePlayer;
+        self.upgradePlayer = upgradePlayer;
         self.playSound = playSound;
         self.incrementCountdown = incrementCountdown;
         self.logout = logout;
@@ -39,6 +39,8 @@
         self.shuffleArray = shuffleArray;
         self.init = init;
         self.savePlayer = savePlayer;
+        self.loadAll = loadAll;
+        self.allUsers = [];
         for (var i = 1; i < 1000; i++) {
             self.upgrades.push({id: i, goal: self.goal});
             self.goal = self.goal * 2;
@@ -59,20 +61,16 @@
         function shuffleArray () {
             self.shuffledArray = $filter('shuffle')(self.imgArray);
         }
-        self.recorded = {
-            counter: 0,
-            index: 0,
-            countdown: 1000,
-            level: '1x',
-            goal: 1000,
-            clicker: 0,
-            grandpa: 0,
-            cost: 100,
-            gcost: 1000
-        };
+        self.recorded = {};
         init();
         function init() {
             self.shuffleArray();
+            self.loadAll();
+        }
+        function loadAll() {
+            self.$http.get('/api/allPlayers').then(function(response) {
+                self.allPlayers = response.data;
+            })
         }
         function showToast() {
             ngToast.create({
@@ -83,16 +81,19 @@
         function initPlayer () {
             self.$http.get('/api/initPlayer').then(function(response){
                 self.user = response.data;
-                self.user.gameplay = self.recorded;
+                self.recorded = self.user.gameplay;
                 self.savePlayer();
                 console.log(self.user);
             });
+            self.user.gameplay = self.recorded;
+            self.savePlayer();
         }
 
         function playSound () {
             ion.sound.play("snap");
         }
         function incrementClicker() {
+            console.log(self.recorded.clicker);
             self.recorded.clicker++;
             self.recorded.counter = self.recorded.counter - self.recorded.cost;
             self.recorded.countdown = self.recorded.goal - self.recorded.counter;
@@ -129,7 +130,7 @@
                 self.user.gameplay = self.recorded;
                 self.savePlayer();
         }
-        function updatePlayer () {
+        function upgradePlayer () {
             self.recorded.counter = self.recorded.counter - self.upgrades[self.recorded.index].goal;
             self.recorded.index++;
             self.recorded.upgrade = false;
@@ -156,6 +157,7 @@
             else {
                 self.recorded.countdown = self.recorded.countdown - self.recorded.clicker - self.recorded.grandpa;
             }
+            self.savePlayer();
         }, 1000)
     }
 

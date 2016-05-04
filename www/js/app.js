@@ -30,16 +30,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'app.ctrl', 'ngToast'
     templateUrl: 'templates/menu.html',
     controller: 'AppCtrl as ac'
   })
-
-  .state('app.leaderboard', {
-    url: '/leaderboard',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/leaderboard.html'
-      }
-    }
-  })
-
   .state('app.registerUser', {
     url: '/registerUser',
     views: {
@@ -48,7 +38,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'app.ctrl', 'ngToast'
       }
     }
   })
-
     .state('app.login', {
       url: '/login',
       views: {
@@ -58,6 +47,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'app.ctrl', 'ngToast'
         }
       }
     })
+      .state('app.leaderboard', {
+          url: '/leaderboard',
+          views: {
+              'menuContent': {
+                  templateUrl: 'templates/leaderboard.html',
+                  controller: 'gameController as gc'
+              }
+          }
+      })
 
     .state('app.game', {
       url: '/game',
@@ -67,17 +65,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'app.ctrl', 'ngToast'
           controller: 'gameController as gc'
         }
       }
-    })
-
-  .state('app.single', {
-    url: '/playlists/:playlistId',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/playlist.html',
-        controller: 'PlaylistCtrl'
-      }
-    }
-  });
+    });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/login');
 });

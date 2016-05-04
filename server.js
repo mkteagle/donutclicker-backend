@@ -20,7 +20,8 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(session(
-    {   secret: 'pickleJuice',
+    {
+        secret: 'pickleJuice',
         resave: false,
         saveUninitialized: true
     }
@@ -44,7 +45,18 @@ passport.use(new GoogleStrategy({
                     user = {
                         _id: profile.id,
                         name: profile.displayName,
-                        picture: profile.photos[0].value
+                        picture: profile.photos[0].value,
+                        gameplay: {
+                            counter: 0,
+                            index: 0,
+                            countdown: 1000,
+                            level: '1x',
+                            goal: 1000,
+                            clicker: 0,
+                            grandpa: 0,
+                            cost: 100,
+                            gcost: 1000
+                        }
                     };
                     insertPlayer(db, user, function () {
                         db.close();
@@ -82,7 +94,18 @@ passport.use(new FacebookStrategy({
                     user = {
                         _id: profile.id,
                         name: profile.displayName,
-                        picture: profile.photos[0].value
+                        picture: profile.photos[0].value,
+                        gameplay: {
+                            counter: 0,
+                            index: 0,
+                            countdown: 1000,
+                            level: '1x',
+                            goal: 1000,
+                            clicker: 0,
+                            grandpa: 0,
+                            cost: 100,
+                            gcost: 1000
+                        }
                     };
                     insertPlayer(db, user, function () {
                         db.close();
@@ -93,10 +116,10 @@ passport.use(new FacebookStrategy({
         return done(null, profile);
     }
 ));
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
     done(null, user.id);
 });
-passport.deserializeUser(function(id, done) {
+passport.deserializeUser(function (id, done) {
     done(null, id);
 });
 
@@ -173,6 +196,18 @@ function savePlayer(db, user, callback) {
         callback(user);
     })
 }
+function findAllPlayers(db, callback) {
+    var userCollection = [];
+    var cursor = db.collection('users').find();
+    cursor.each(function(err, doc) {
+        if (doc != null) {
+            userCollection.push(doc);
+        }
+        else {
+            callback(userCollection);
+        }
+    })
+}
 router.route('/initPlayer')
     .get(function (req, res) {
         console.log(req.user);
@@ -186,19 +221,27 @@ router.route('/initPlayer')
         })
     });
 router.route('/savePlayer')
-    .put(function(req, res){
+    .put(function (req, res) {
         console.log(req.body);
         MongoClient.connect(url, function (err, db) {
             assert.equal(null, err);
             savePlayer(db, req.body, function (user) {
-                db.close();
                 res.json(user);
             })
         })
     });
-
+router.route('/allPlayers')
+    .get(function (req, res) {
+        MongoClient.connect(url, function(err, db) {
+            assert.equal(null, err);
+            findAllPlayers(db, function (users) {
+                db.close();
+                res.json(users);
+            })
+        })
+    })
 app.listen(port, function () {
-    console.log("App listening on port ${port}...");
+    console.log("App listening on port..." + port);
 });
 
 
@@ -208,18 +251,18 @@ passport.use(new GoogleStrategy({
         clientSecret: "nRsoollVg_N0k3EiCQu1cWjw",
         callbackURL: "http://localhost:3000/auth/google/callback"
     },
-    function(accessToken, refreshToken, profile, done) {
+    function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
         return done(null, profile);
     }
 ));
 
 app.get('/auth/google',
-    passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }));
+    passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/plus.login']}));
 
 app.get('/auth/google/callback',
     passport.authenticate('google', {failureRedirect: '/index.html#/app/login'}),
-    function(req, res) {
+    function (req, res) {
         res.redirect('http://localhost:3000/#/app/game');
     });
 
@@ -231,14 +274,11 @@ passport.use(new FacebookStrategy({
         callbackURL: "http://localhost:3000/auth/facebook/callback",
         profileFields: ['id', 'displayName', 'photos', 'email']
     },
-    function(accessToken, refreshToken, profile, done) {
+    function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
         return done(null, profile);
     }
 ));
-passport.serializeUser(function(user, cb) {
-    cb(null, user);
-});
 
 app.get('/auth/facebook', passport.authenticate('facebook'));
 app.get('/auth/facebook/callback',
@@ -246,10 +286,9 @@ app.get('/auth/facebook/callback',
 
         failureRedirect: '/index.html#/app/login'
     }),
-    function(req, res) {
+    function (req, res) {
         res.redirect('http://localhost:3000/#/app/game');
     });
-
 
 
 /////////// EMAIL & PASSWORD LOGIN
@@ -258,7 +297,7 @@ passport.use(new LocalStrategy({
         usernameField: 'email',
         passwordField: 'passwd'
     },
-    function(username, password, done) {
+    function (username, password, done) {
         return done(null, username);
     }
 ));
@@ -266,23 +305,41 @@ passport.use(new LocalStrategy({
 app.post('/app.login',
     passport.authenticate('local',
         {
-            successRedirect:'/',
+            successRedirect: '/',
             failureRedirect: '/login',
             successFlash: 'Welcome!',
             failureFlash: true, message: 'Invalid username or password.',
             session: false
         }),
-    function(req, res){
+    function (req, res) {
         var user = {
             _id: req.user.username,
-            username: req.user.username
-        }
-        res.redirect('/http://localhost:3000/#/app/game/' + req.user.username);
-        res.json({user});
+            username: req.user.username,
+            gameplay: {
+                counter: 0,
+                index: 0,
+                countdown: 1000,
+                level: '1x',
+                goal: 1000,
+                clicker: 0,
+                grandpa: 0,
+                cost: 100,
+                gcost: 1000
+                }
+        };
+        req.login(user, function (error) {
+            if (error) {
+                console.log('error logging in', error);
+            }
+            else {
+                console.log('login success', user);
+                res.redirect('/http://localhost:3000/#/app/game/' + req.user.username);
+                res.json(user);
+            }
+        });
+
     });
-
-
-app.get('/logout', function(req, res){
+app.get('/logout', function (req, res) {
     req.logout();
     res.redirect('/');
 });
