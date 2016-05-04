@@ -314,18 +314,7 @@ app.post('/app.login',
     function (req, res) {
         var user = {
             _id: req.user.username,
-            username: req.user.username,
-            gameplay: {
-                counter: 0,
-                index: 0,
-                countdown: 1000,
-                level: '1x',
-                goal: 1000,
-                clicker: 0,
-                grandpa: 0,
-                cost: 100,
-                gcost: 1000
-                }
+            username: req.user.username
         };
         req.login(user, function (error) {
             if (error) {
@@ -333,6 +322,32 @@ app.post('/app.login',
             }
             else {
                 console.log('login success', user);
+                MongoClient.connect(url, function (err, db) {
+                    assert.equal(null, err);
+                    checkforDuplicates(db, user._id, function (foundUser, user) {
+                        if (!foundUser) {
+                            user = {
+                                _id: user._id,
+                                name: profile.displayName,
+                                picture: profile.photos[0].value,
+                                gameplay: {
+                                    counter: 0,
+                                    index: 0,
+                                    countdown: 1000,
+                                    level: '1x',
+                                    goal: 1000,
+                                    clicker: 0,
+                                    grandpa: 0,
+                                    cost: 100,
+                                    gcost: 1000
+                                }
+                            };
+                            insertPlayer(db, user, function () {
+                                db.close();
+                            })
+                        }
+                    });
+                });
                 res.redirect('/http://localhost:3000/#/app/game/' + req.user.username);
                 res.json(user);
             }
