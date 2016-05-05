@@ -33,7 +33,8 @@ var port = (process.env.PORT || 3000);
 passport.use(new GoogleStrategy({
         clientID: "829492191243-v8ft9f21p29flncurno9h3hgnsealst4.apps.googleusercontent.com",
         clientSecret: "oxzGcR_ic7p3R49XRwPxM79f",
-        callbackURL: "http://localhost:3000/auth/google/callback"
+        callbackURL: "http://54.186.185.233/auth/google/callback"
+    //     callbackURL: "http://localhost:3000/auth/google/callback"
     },
     function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
@@ -73,14 +74,15 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
     passport.authenticate('google', {failureRedirect: '/index.html#/app/login'}),
     function (req, res) {
-        res.redirect('http://localhost:3000/#/app/game');
+        res.redirect('"http://54.186.185.233/#/app/game');
     });
 
 /////////// FACEBOOK LOGIN
 passport.use(new FacebookStrategy({
         clientID: 1517975181838329,
         clientSecret: "c7dcea90211ffb1becb1ae665cb2b33c",
-        callbackURL: "http://localhost:3000/auth/facebook/callback",
+        callbackURL: "http://54.186.185.233/auth/facebook/callback",
+        // callbackURL: "http://localhost:3000/auth/facebook/callback",
         profileFields: ['id', 'displayName', 'email', 'picture.type(large)']
     },
     function (accessToken, refreshToken, profile, done) {
@@ -136,7 +138,7 @@ app.get('/auth/facebook/callback',
         failureRedirect: '/index.html#/app/login'
     }),
     function (req, res) {
-        res.redirect('http://localhost:3000/#/app/game');
+        res.redirect('"http://54.186.185.233/#/app/game');
     });
 
 
