@@ -4,9 +4,9 @@
             <img class="app-icon">
             <h1>Register</h1>
             <form>
-                <input type="text" name="username" placeholder="Username">
-                <input type="password" name="password" placeholder="Password">
-                <input type="submit" name="login" class="login login-submit" value="Login" ng-click="ac.login()">
+                <input type="text" name="username" ng-model="lc.username" placeholder="Username">
+                <input type="password" name="password" ng-model="lc.password" placeholder="Password">
+                <input type="submit" name="creation" class="login login-submit" value="Create User" ng-click="lc.register()">
             </form>
     </ion-content>
 </ion-view>

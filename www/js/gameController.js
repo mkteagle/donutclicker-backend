@@ -70,6 +70,7 @@
         function loadAll() {
             self.$http.get('/api/allPlayers').then(function(response) {
                 self.allPlayers = response.data;
+                console.log(self.allPlayers);
             })
         }
         function showToast() {

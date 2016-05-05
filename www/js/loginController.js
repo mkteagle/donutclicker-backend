@@ -4,17 +4,17 @@
     loginController.$inject = ['gameService', '$http'];
 function loginController(gameService, $http) {
     // controller data and functions
-    var vm = this;
-    vm.$http = $http;
-    vm.authData = gameService.user;
-    vm.recorded = gameService.recorded;
-    vm.facebookLogin = facebookLogin;
-    vm.googleLogin = googleLogin;
-    vm.authWithPassword = authWithPassword;
-    vm.createUser = createUser;
-    vm.addPlayer = addPlayer;
-    vm.email = '';
-    vm.password = '';
+    var self = this;
+    self.$http = $http;
+    self.authData = gameService.user;
+    self.recorded = gameService.recorded;
+    self.facebookLogin = facebookLogin;
+    self.googleLogin = googleLogin;
+    self.addPlayer = addPlayer;
+    self.login = login;
+    self.email = '';
+    self.password = '';
+    self.name = '';
     function addPlayer() {
         gameService.addPlayer();
     }
@@ -25,13 +25,28 @@ function loginController(gameService, $http) {
     function googleLogin() {
         location.href = "/auth/google";
     }
-    function createUser() {
-        gameService.createUser(vm.email, vm.password);
-        vm.password = '';
+    function login() {
+        self.$http.post('/api/login', {
+            username: self.username,
+            password: self.password
+        }).then( function() {
+            console.log('done login');
+        }).catch(function() {
+            console.log('login error');
+        });
     }
-    function authWithPassword() {
-        gameService.authWithPassword(vm.email, vm.password);
-        vm.password = '';
+    function register() {
+        console.log('register clicked');
+        self.$http.post('/api/register', {
+            _id: self.username,
+            username: self.username,
+            password: self.password,
+            name: self.name
+        }).then(function(){
+            console.log('done creation');
+        }).catch(function() {
+            console.log('creation error');
+        })
     }
 }
 })();

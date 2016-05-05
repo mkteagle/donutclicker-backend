@@ -4,9 +4,9 @@
       <img class="app-icon">
       <h1>Welcome Donut Lovers</h1>
       <form>
-        <input type="text" name="user" placeholder="Username">
-        <input type="password" name="pass" placeholder="Password" >
-        <input type="submit" name="login" class="login login-submit" value="Login" ng-click="ac.login()">
+        <input type="text" name="user" ng-model="lc.username" placeholder="Username">
+        <input type="password" name="pass" ng-model="lc.password" placeholder="Password" >
+        <input type="submit" name="login" class="login login-submit" value="Login" ng-click="lc.login()">
       </form>
 
       <div class="login-help">

@@ -30,6 +30,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api', router);
 var port = (process.env.PORT || 3000);
+
+MongoClient.connect(url, function(err, database) {
+    if(err) throw err;
+
+    db = database;
+
+    app.listen(port, function () {
+        console.log("App listening on port..." + port);
+    });
+});
 /////////// GOOGLE LOGIN
 passport.use(new GoogleStrategy({
         clientID: "829492191243-v8ft9f21p29flncurno9h3hgnsealst4.apps.googleusercontent.com",
@@ -38,31 +48,27 @@ passport.use(new GoogleStrategy({
     },
     function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
-        MongoClient.connect(url, function (err, db) {
-            assert.equal(null, err);
-            checkforDuplicates(db, profile.id, function (foundUser, user) {
-                if (!foundUser) {
-                    user = {
-                        _id: profile.id,
-                        name: profile.displayName,
-                        picture: profile.photos[0].value,
-                        gameplay: {
-                            counter: 0,
-                            index: 0,
-                            countdown: 1000,
-                            level: '1x',
-                            goal: 1000,
-                            clicker: 0,
-                            grandpa: 0,
-                            cost: 100,
-                            gcost: 1000
-                        }
-                    };
-                    insertPlayer(db, user, function () {
-                        db.close();
-                    })
-                }
-            });
+        checkforDuplicates(profile.id, function (foundUser, user) {
+            if (!foundUser) {
+                user = {
+                    _id: profile.id,
+                    name: profile.displayName,
+                    picture: profile.photos[0].value,
+                    gameplay: {
+                        counter: 0,
+                        index: 0,
+                        countdown: 1000,
+                        level: '1x',
+                        goal: 1000,
+                        clicker: 0,
+                        grandpa: 0,
+                        cost: 100,
+                        gcost: 1000
+                    }
+                };
+                insertPlayer(user, function () {
+                })
+            }
         });
         done(null, profile);
     }
@@ -87,9 +93,7 @@ passport.use(new FacebookStrategy({
     function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
         console.log(profile);
-        MongoClient.connect(url, function (err, db) {
-            assert.equal(null, err);
-            checkforDuplicates(db, profile.id, function (foundUser, user) {
+            checkforDuplicates(profile.id, function (foundUser, user) {
                 if (!foundUser) {
                     user = {
                         _id: profile.id,
@@ -107,12 +111,10 @@ passport.use(new FacebookStrategy({
                             gcost: 1000
                         }
                     };
-                    insertPlayer(db, user, function () {
-                        db.close();
+                    insertPlayer(user, function () {
                     })
                 }
             });
-        });
         return done(null, profile);
     }
 ));
@@ -161,7 +163,7 @@ app.post('/app.login',
             username: req.user.username
         });
     });
-function insertPlayer(db, user, callback) {
+function insertPlayer(user, callback) {
     db.collection('users').insertOne(user, function (err, result) {
         assert.equal(err, null);
         console.log('Inserted a document into the users collection');
@@ -181,22 +183,21 @@ function checkforDuplicates(db, user, callback) {
         callback(foundUser, user);
     })
 }
-function findPlayer(db, user, callback) {
-    db.collection('users').findOne({'_id': user}, function (err, result) {
+function findPlayer(user, callback) {
+   db.collection('users').findOne({'_id': user}, function (err, result) {
         assert.equal(err, null);
         user = result;
         callback(user);
     })
 }
-function savePlayer(db, user, callback) {
+function savePlayer(user, callback) {
     db.collection('users').replaceOne({'_id': user._id}, user, function (err, result) {
-        assert.equal(err, null);
         if (err) throw err;
         console.log('Updated Player');
         callback(user);
     })
 }
-function findAllPlayers(db, callback) {
+function findAllPlayers(callback) {
     var userCollection = [];
     var cursor = db.collection('users').find();
     cursor.each(function(err, doc) {
@@ -212,37 +213,24 @@ router.route('/initPlayer')
     .get(function (req, res) {
         console.log(req.user);
         var id = req.user;
-        MongoClient.connect(url, function (err, db) {
-            assert.equal(null, err);
-            findPlayer(db, id, function (user) {
-                db.close();
+            findPlayer(id, function (user) {
                 res.json(user);
             })
-        })
     });
 router.route('/savePlayer')
     .put(function (req, res) {
         console.log(req.body);
-        MongoClient.connect(url, function (err, db) {
-            assert.equal(null, err);
-            savePlayer(db, req.body, function (user) {
+            savePlayer(req.body, function (user) {
                 res.json(user);
             })
-        })
     });
 router.route('/allPlayers')
     .get(function (req, res) {
-        MongoClient.connect(url, function(err, db) {
-            assert.equal(null, err);
-            findAllPlayers(db, function (users) {
-                db.close();
+            findAllPlayers(function (users) {
                 res.json(users);
             })
-        })
-    })
-app.listen(port, function () {
-    console.log("App listening on port..." + port);
-});
+    });
+
 
 
 /////////// GOOGLE LOGIN
@@ -289,71 +277,60 @@ app.get('/auth/facebook/callback',
     function (req, res) {
         res.redirect('http://localhost:3000/#/app/game');
     });
-
-
 /////////// EMAIL & PASSWORD LOGIN
-
 passport.use(new LocalStrategy({
-        usernameField: 'email',
-        passwordField: 'passwd'
+        usernameField: 'username',
+        passwordField: 'password'
     },
-    function (username, password, done) {
-        return done(null, username);
+    function(username, password, done) {
+        db.collection('users').findOne({
+            '_id': username,
+            'password': password
+        }, function (err, user) {
+            if (err) {
+                return done(err);
+            }
+            if (!user) {
+                return done(null, false);
+            }
+            if (user.password != password) {
+                return done(null, false);
+            }
+            return done(null, user);
+        });
     }
 ));
+router.route('/login')
+    .post(function(req, res, next){
+        passport.authenticate('local', function(err, user, info) {
+            console.log(err, user, info);
+            req.login(user, (error) => {
+                if (error) {
+                    console.log('error login', error);
+                    res.end();
+                } else {
+                    console.log('login success', user);
+                    res.json(user);
+                }
+            });
 
-app.post('/app.login',
-    passport.authenticate('local',
-        {
-            successRedirect: '/',
-            failureRedirect: '/login',
-            successFlash: 'Welcome!',
-            failureFlash: true, message: 'Invalid username or password.',
-            session: false
-        }),
-    function (req, res) {
-        var user = {
-            _id: req.user.username,
-            username: req.user.username
-        };
-        req.login(user, function (error) {
-            if (error) {
-                console.log('error logging in', error);
-            }
-            else {
-                console.log('login success', user);
-                MongoClient.connect(url, function (err, db) {
-                    assert.equal(null, err);
-                    checkforDuplicates(db, user._id, function (foundUser, user) {
-                        if (!foundUser) {
-                            user = {
-                                _id: user._id,
-                                name: profile.displayName,
-                                picture: profile.photos[0].value,
-                                gameplay: {
-                                    counter: 0,
-                                    index: 0,
-                                    countdown: 1000,
-                                    level: '1x',
-                                    goal: 1000,
-                                    clicker: 0,
-                                    grandpa: 0,
-                                    cost: 100,
-                                    gcost: 1000
-                                }
-                            };
-                            insertPlayer(db, user, function () {
-                                db.close();
-                            })
-                        }
-                    });
-                });
-                res.redirect('/http://localhost:3000/#/app/game/' + req.user.username);
-                res.json(user);
-            }
-        });
-
+        })(req, res, next);
     });
+router.route('/register', function (req, res) {
+    db.collection('users').insert({
+        '_id': req.body.username,
+        "name": req.body.name,
+        "password": req.body.password,
+        "provider": "email"
+    }, function (err, result) {
+        if (err != null) {
+            res.send('Email already registered');
+        } else {
+            res.end();
+        }
+    });
+});
+
 app.get('/logout', function (req, res) {
     req.logout();
     res.redirect('/');
