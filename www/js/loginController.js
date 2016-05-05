@@ -6,6 +6,7 @@ function loginController(gameService, $http) {
     // controller data and functions
     var vm = this;
     vm.$http = $http;
+    vm.gameService = gameService;
     vm.authData = gameService.user;
     vm.recorded = gameService.recorded;
     vm.facebookLogin = facebookLogin;
@@ -13,7 +14,7 @@ function loginController(gameService, $http) {
     vm.authWithPassword = authWithPassword;
     vm.createUser = createUser;
     vm.addPlayer = addPlayer;
-    vm.email = '';
+    vm.username = '';
     vm.password = '';
     function addPlayer() {
         gameService.addPlayer();

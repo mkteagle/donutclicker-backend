@@ -39,6 +39,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'app.ctrl', 'ngToast'
       }
     }
   })
+
     .state('app.login', {
       url: '/login',
       views: {
@@ -55,24 +56,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'app.ctrl', 'ngToast'
         'menuContent': {
           templateUrl: 'templates/game.html',
           controller: 'gameController as gc'
-        }
-      }
-    })
-
-  .state('app.browse', {
-      url: '/browse',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/browse.html'
-        }
-      }
-    })
-    .state('app.playlists', {
-      url: '/playlists',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/playlists.html',
-          controller: 'PlaylistsCtrl'
         }
       }
     })

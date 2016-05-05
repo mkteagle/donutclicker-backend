@@ -4,11 +4,11 @@
 'use strict';
 
 angular.module('app.ctrl', [])
-    .controller('AppCtrl', AppCtrl)
+    .controller('AppCtrl', AppCtrl);
 
-AppCtrl.$inject = ['$state', 'gameService', '$ionicSideMenuDelegate', '$ionicHistory'];
+AppCtrl.$inject = ['$state', 'gameService', '$ionicSideMenuDelegate', '$ionicHistory', '$http'];
 
-function AppCtrl ($state, gameService, $ionicSideMenuDelegate, $ionicHistory) {
+function AppCtrl ($state, gameService, $ionicSideMenuDelegate, $ionicHistory, $http) {
     // Form data for the login modal
     var self = this;
     self.loginData = {};
@@ -30,10 +30,11 @@ function AppCtrl ($state, gameService, $ionicSideMenuDelegate, $ionicHistory) {
             this.classList.toggle('active');
         });
     }
+
     function logout() {
-        gameService.logout();
+        location.href = "/logout";
         $ionicSideMenuDelegate.toggleLeft();
-        $ionicSideMenuDelegate.canDragContent(false)
+        $ionicSideMenuDelegate.canDragContent(false);
         $ionicHistory.nextViewOptions({historyRoot: true});
         $state.go('app.login');
         self.gameService.isLoggedIn = false;
