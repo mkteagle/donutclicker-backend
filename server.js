@@ -152,15 +152,14 @@ function insertPlayer(db, user, callback) {
     })
 }
 function savePlayer(db, user, callback) {
-       db.collection('users').replaceOne({_id: user._id }, function (err, result) {
-           user = {
-               _id: profile.id,
-               name: profile.displayName,
-               picture: profile.photos[0].value
-           };
-           
-        res.json(user);
-        console.log(results);
+    console.log(user);
+    user = {
+        _id: user._id,
+        name: user.name
+
+    };
+      db.collection('users').replaceOne({_id: user._id }, user, function (err, result) {
+
         callback(user);
     })
 }
@@ -198,10 +197,10 @@ router.route('/initPlayer')
     });
 router.route('/savePlayer')
     .put(function (req, res) {
-        console.log(req.user);
+        console.log(req.body);
          MongoClient.connect(url, function (err, db) {
             assert.equal(null, err);
-            savePlayer(db, req.user, function (user) {
+            savePlayer(db, req.body, function (user) {
                 db.close();
                 res.json(user);
             })

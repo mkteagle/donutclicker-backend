@@ -22,6 +22,7 @@
         self.incrementClicker = incrementClicker;
         self.clickGrandpa = clickGrandpa;
         self.retrievePlayer = retrievePlayer;
+        self.savePlayer = savePlayer;
 
         self.showError = showError;
         self.shuffleArray = shuffleArray;
@@ -41,6 +42,7 @@
         function retrievePlayer () {
             self.$http.get('/api/initPlayer').then(function(response){
                 self.user = response.data;
+                self.recorded = response.data.gameplay;
                 console.log(self.user);
             });
             return self.user;
@@ -85,11 +87,12 @@
             self.recorded.goal = self.upgrades[self.recorded.index].goal;
             self.recorded.level = self.upgrades[self.recorded.index].id + 'x';
             self.user.gameplay = self.recorded;
-            self.$http.put('/api/updatePlayer', self.user).then(function(response){
-                self.user = response.data;
-            })
 
         }
+        function savePlayer() {
+        self.$http.put('/api/updatePlayer', self.user).then(function(response){
+            self.user = response.data;
+        })}
         function showError(error) {
             ngToast.create({
                 className: 'failure',

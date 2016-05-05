@@ -53,16 +53,21 @@
         }
         function selectPlayer () {
             gameService.selectPlayer();
+
         }
         function incrementCountdown() {
             self.selected.countdown = gameService.incrementCountdown();
+            gameService.savePlayer();
         }
         function incrementCounter () {
             self.selected.counter = gameService.incrementCounter();
+            gameService.savePlayer();
         }
         function updatePlayer () {
             gameService.updatePlayer();
+            gameService.savePlayer();
         }
+
 
         //var navIcons = document.getElementsByClassName('ion-navicon');
         //for (var i = 0; i < navIcons.length; i++) {
