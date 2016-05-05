@@ -39,7 +39,6 @@
         self.shuffleArray = shuffleArray;
         self.init = init;
         self.savePlayer = savePlayer;
-        self.loadAll = loadAll;
         self.allUsers = [];
         for (var i = 1; i < 1000; i++) {
             self.upgrades.push({id: i, goal: self.goal});
@@ -65,14 +64,8 @@
         init();
         function init() {
             self.shuffleArray();
-            self.loadAll();
         }
-        function loadAll() {
-            self.$http.get('/api/allPlayers').then(function(response) {
-                self.allPlayers = response.data;
-                console.log(self.allPlayers);
-            })
-        }
+        
         function showToast() {
             ngToast.create({
                 className: 'ngtoast-default ngtoast-fly',

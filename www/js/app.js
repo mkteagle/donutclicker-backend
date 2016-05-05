@@ -53,7 +53,7 @@ angular.module('starter', ['ionic', 'app.ctrl', 'ngToast', 'app.login', 'gameSer
           views: {
               'menuContent': {
                   templateUrl: 'templates/leaderboard.html',
-                  controller: 'gameController as gc'
+                  controller: 'leaderboardController as gc'
               }
           }
       })

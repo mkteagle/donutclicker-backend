@@ -8,14 +8,8 @@
                 <th>Score</th>
             </tr>
             </thead>
-            <div>
-                {{gc.allUsers[0].name}}
-            </div>
-            <div ng-repeat="item in gc.allUsers">
-                {{item.name}}
-            </div>
             <tbody>
-            <tr ng-repeat="item in gc.allUsers | orderBy:'-gameplay.counter' | limitTo: '10'">
+            <tr ng-repeat="item in gc.allPlayers | toArray | orderBy:'-gameplay.counter' | limitTo: '10'">
                 <th>{{item.name | initials }}</th>
                 <th>{{item.gameplay.counter}}</th>
             </tr>
