@@ -5,7 +5,6 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var passport = require('passport'),
     FacebookStrategy = require('passport-facebook').Strategy,
-    LocalStrategy = require('passport-local').Strategy,
     GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var router = express.Router();
 var ObjectId = require('mongodb').ObjectID;
@@ -29,11 +28,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api', router);
 var port = (process.env.PORT || 3000);
+
+
 /////////// GOOGLE LOGIN
 passport.use(new GoogleStrategy({
         clientID: "829492191243-v8ft9f21p29flncurno9h3hgnsealst4.apps.googleusercontent.com",
         clientSecret: "oxzGcR_ic7p3R49XRwPxM79f",
-        callbackURL: "http://localhost:3000/auth/google/callback"
+        callbackURL: "http://localhost:3000/auth/google/callback",
+        profileFields: ['id','displayName', 'name', 'gender', 'photos' ]
     },
     function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
@@ -93,17 +95,10 @@ passport.use(new FacebookStrategy({
     }
 ));
 passport.serializeUser(function(user, done) {
-    done(null, user.id);
+    done(null, user);
 });
-passport.deserializeUser(function(id, done) {
-    done(null, id);
-    // console.log(id);
-    // MongoClient.connect(url, function(err, db) {
-    //     assert.equal(null, err);
-    //     db.collection('users').findById(id, function(err, user) {
-    //         done(err, user);
-    //     })
-    // });
+passport.deserializeUser(function(user, done) {
+    done(null, user);
 });
 
 
@@ -118,32 +113,7 @@ app.get('/auth/facebook/callback',
     });
 
 
-/////////// EMAIL & PASSWORD LOGIN
-passport.use(new LocalStrategy({
-        usernameField: 'email',
-        passwordField: 'passwd'
-    },
-    function (username, password, done) {
-        return done(null, user);
-    }
-));
 
-app.post('/app.login',
-    passport.authenticate('local',
-        {
-            successRedirect: '/',
-            failureRedirect: '/login',
-            successFlash: 'Welcome!',
-            failureFlash: true, message: 'Invalid username or password.',
-            session: false
-        }),
-    function (req, res) {
-        res.redirect('/users/' + req.user.username);
-        res.json({
-            id: req.user.id,
-            username: req.user.username
-        });
-    });
 function insertPlayer(db, user, callback) {
     db.collection('users').insertOne(user, function (err, result) {
         assert.equal(err, null);
@@ -223,9 +193,6 @@ passport.use(new FacebookStrategy({
         return done(null, profile);
     }
 ));
-passport.serializeUser(function(user, cb) {
-    cb(null, user);
-});
 
 app.get('/auth/facebook', passport.authenticate('facebook'));
 app.get('/auth/facebook/callback',
@@ -236,37 +203,6 @@ app.get('/auth/facebook/callback',
     function(req, res) {
         res.redirect('http://localhost:3000/#/app/game');
     });
-
-
-
-/////////// EMAIL & PASSWORD LOGIN
-
-passport.use(new LocalStrategy({
-        usernameField: 'email',
-        passwordField: 'passwd'
-    },
-    function(username, password, done) {
-        return done(null, user);
-    }
-));
-
-app.post('/app.login',
-    passport.authenticate('local',
-        {
-            successRedirect:'/',
-            failureRedirect: '/login',
-            successFlash: 'Welcome!',
-            failureFlash: true, message: 'Invalid username or password.',
-            session: false
-        }),
-    function(req, res){
-        res.redirect('/http://localhost:3000/#/app/game/' + req.user.username);
-        res.json({
-            _id: req.user.id,
-            username: req.user.username
-        });
-    });
-
 
 app.get('/logout', function(req, res){
     req.logout();

@@ -4,11 +4,11 @@
 'use strict';
 
 angular.module('app.ctrl', [])
-    .controller('AppCtrl', AppCtrl)
+    .controller('AppCtrl', AppCtrl);
 
-AppCtrl.$inject = ['$state', 'gameService', '$ionicSideMenuDelegate', '$ionicHistory'];
+AppCtrl.$inject = ['$state', 'gameService', '$ionicSideMenuDelegate', '$ionicHistory', '$http'];
 
-function AppCtrl ($state, gameService, $ionicSideMenuDelegate, $ionicHistory) {
+function AppCtrl ($state, gameService, $ionicSideMenuDelegate, $ionicHistory, $http) {
     // Form data for the login modal
     var self = this;
     self.loginData = {};
@@ -17,7 +17,6 @@ function AppCtrl ($state, gameService, $ionicSideMenuDelegate, $ionicHistory) {
     self.hasHeaderFabRight = false;
     self.img = gameService.img;
     self.logout = logout;
-    self.login = login;
     self.gameService = gameService;
     self.getUser = gameService.getUser;
     self.leaderboard = leaderboard;
@@ -31,14 +30,7 @@ function AppCtrl ($state, gameService, $ionicSideMenuDelegate, $ionicHistory) {
             this.classList.toggle('active');
         });
     }
-    function login() {
-        location.href = "/#/app/game";
-        $ionicSideMenuDelegate.toggleRight();
-        $ionicSideMenuDelegate.canDragContent(true);
-        $ionicHistory.nextViewOptions({historyRoot: true});
-        $state.go('app.game');
-        self.gameService.isLoggedIn = true;
-    }
+
     function logout() {
         location.href = "/logout";
         $ionicSideMenuDelegate.toggleLeft();

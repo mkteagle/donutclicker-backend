@@ -40,15 +40,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'app.ctrl', 'ngToast'
     }
   })
 
-  .state('app.registerUser', {
-    url: '/registerUser',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/registerUser.html'
-      }
-    }
-  })
-
     .state('app.login', {
       url: '/login',
       views: {

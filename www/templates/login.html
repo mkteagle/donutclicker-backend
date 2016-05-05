@@ -3,21 +3,15 @@
     <div class="login-card">
       <img class="app-icon">
       <h1>Welcome Donut Lovers</h1>
-      <form>
-        <input type="text" name="user" placeholder="Username">
-        <input type="password" name="pass" placeholder="Password" >
-        <input type="submit" name="login" class="login login-submit" value="Login" ng-click="ac.login()">
-      </form>
 
       <div class="login-help">
-        <a href="#/app/registerUser">Register</a>
+        <div class="row">
+          <a href="/auth/facebook"><button class="button button-full button-assertive" ng-click="lc.facebookLogin()">Log in with Facebook</button></a>
+        </div>
+        <div class="row">
+          <a href="/auth/google"><button class="button button-full button-assertive" ng-click="lc.googleLogin()">Log in with Google</button></a>
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <a href="/auth/facebook"><button class="button button-full button-assertive" ng-click="lc.facebookLogin()">Facebook</button></a>
-    </div>
-    <div class="row">
-      <a href="/auth/google"><button class="button button-full button-assertive" ng-click="lc.googleLogin()">Google</button></a>
     </div>
   </ion-content>
 </ion-view>
