@@ -19,7 +19,8 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(session(
-    {   secret: 'pickleJuice',
+    {
+        secret: 'pickleJuice',
         resave: false,
         saveUninitialized: true
     }
@@ -28,7 +29,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api', router);
 var port = (process.env.PORT || 3000);
-
 
 /////////// GOOGLE LOGIN
 passport.use(new GoogleStrategy({
@@ -65,7 +65,6 @@ passport.use(new GoogleStrategy({
                     })
                 }
             });
-        });
         done(null, profile);
     }
 ));
@@ -92,6 +91,8 @@ passport.use(new FacebookStrategy({
         MongoClient.connect(url, function (err, db) {
             assert.equal(null, err);
             checkforDuplicates(db, profile.id, function (foundUser, user) {
+            console.log(profile);
+            checkforDuplicates(profile.id, function (foundUser, user) {
                 if (!foundUser) {
                     user = {
                         _id: profile.id,
@@ -109,20 +110,18 @@ passport.use(new FacebookStrategy({
                             gcost: 1000
                         }
                     };
-                    insertPlayer(db, user, function () {
-                        db.close();
+                    insertPlayer(user, function () {
                     })
                 }
             });
-        });
         return done(null, profile);
     }
 ));
-passport.serializeUser(function(user, done) {
-    done(null, user);
+passport.serializeUser(function (user, done) {
+    done(null, user.id);
 });
-passport.deserializeUser(function(user, done) {
-    done(null, user);
+passport.deserializeUser(function (id, done) {
+    done(null, id);
 });
 
 
@@ -135,9 +134,6 @@ app.get('/auth/facebook/callback',
     function (req, res) {
         res.redirect('http://52.36.77.51/#/app/game');
     });
-
-
-
 function insertPlayer(db, user, callback) {
     db.collection('users').insertOne(user, function (err, result) {
         assert.equal(err, null);
@@ -157,8 +153,8 @@ function checkforDuplicates(db, user, callback) {
         callback(foundUser, user);
     })
 }
-function findPlayer(db, user, callback) {
-    db.collection('users').findOne({'_id': user}, function (err, result) {
+function findPlayer(user, callback) {
+   db.collection('users').findOne({'_id': user}, function (err, result) {
         assert.equal(err, null);
         user = result;
         callback(user);
@@ -167,7 +163,6 @@ function findPlayer(db, user, callback) {
 function savePlayer(db, user, callback) {
     db.collection('users').replaceOne({'_id': user._id}, user, function (err, result) {
         assert.equal(err, null);
-        if (err) throw err;
         console.log('Updated Player');
         callback(user);
     })
@@ -208,19 +203,16 @@ router.route('/initPlayer')
     .get(function (req, res) {
         console.log(req.user);
         var id = req.user;
-        MongoClient.connect(url, function (err, db) {
-            assert.equal(null, err);
-            findPlayer(db, id, function (user) {
-                db.close();
+            findPlayer(id, function (user) {
                 res.json(user);
             })
-        })
     });
 
 app.listen(port, function () {
-    console.log("App listening on port ${port}...");
+    console.log("App listening on port ..." + port);
 });
-app.get('/logout', function(req, res){
+
+app.get('/logout', function (req, res) {
     req.logout();
     res.redirect('/');
 });
