@@ -138,7 +138,7 @@ app.get('/auth/facebook/callback',
         failureRedirect: '/index.html#/app/login'
     }),
     function (req, res) {
-        res.redirect('"http://54.186.185.233/#/app/game');
+        res.redirect('http://54.186.185.233/#/app/game');
     });
 
 
