@@ -11,8 +11,8 @@ var router = express.Router();
 var ObjectId = require('mongodb').ObjectID;
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
-var url = 'mongodb://localhost:27017/donutclicker';
-// var url = 'mongodb://mkteagle:Password01@ds013221.mlab.com:13221/donutclicker';
+// var url = 'mongodb://localhost:27017/donutclicker';
+var url = 'mongodb://mkteagle:Password01@ds013221.mlab.com:13221/donutclicker';
 app.use('/', express.static(__dirname + '/www'));
 app.use('/node_modules', express.static(__dirname + '/node_modules'));
 
@@ -44,7 +44,18 @@ passport.use(new GoogleStrategy({
                     user = {
                         _id: profile.id,
                         name: profile.displayName,
-                        picture: profile.photos[0].value
+                        picture: profile.photos[0].value,
+                        gameplay: {
+                            counter: 0,
+                            index: 0,
+                            countdown: 1000,
+                            level: '1x',
+                            goal: 1000,
+                            clicker: 0,
+                            grandpa: 0,
+                            cost: 100,
+                            gcost: 1000
+                        }
                     };
                     insertPlayer(db, user, function () {
                         db.close();
@@ -74,14 +85,25 @@ passport.use(new FacebookStrategy({
     },
     function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
-        MongoClient.connect(profile.id, function (err, db) {
+        MongoClient.connect(url, function (err, db) {
             assert.equal(null, err);
             checkforDuplicates(db, profile.id, function (foundUser, user) {
                 if (!foundUser) {
                     user = {
                         _id: profile.id,
                         name: profile.displayName,
-                        picture: profile.photos[0].value
+                        picture: profile.photos[0].value,
+                        gameplay: {
+                            counter: 0,
+                            index: 0,
+                            countdown: 1000,
+                            level: '1x',
+                            goal: 1000,
+                            clicker: 0,
+                            grandpa: 0,
+                            cost: 100,
+                            gcost: 1000
+                        }
                     };
                     insertPlayer(db, user, function () {
                         db.close();
