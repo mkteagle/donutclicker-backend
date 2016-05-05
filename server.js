@@ -145,17 +145,6 @@ function insertPlayer(db, user, callback) {
         callback();
     })
 }
-function savePlayer(db, user, callback) {
-    console.log(user);
-    user = {
-        _id: user._id,
-        name: user.name
-
-    };
-      db.collection('users').replaceOne({_id: user._id }, user, function (err, result) {
-        callback(user);
-    })
-}
 function checkforDuplicates(db, user, callback) {
     db.collection('users').findOne({'_id': user}, function (err, result) {
         assert.equal(err, null);
@@ -175,6 +164,46 @@ function findPlayer(db, user, callback) {
         callback(user);
     })
 }
+function savePlayer(db, user, callback) {
+    db.collection('users').replaceOne({'_id': user._id}, user, function (err, result) {
+        assert.equal(err, null);
+        if (err) throw err;
+        console.log('Updated Player');
+        callback(user);
+    })
+}
+function findAllPlayers(db, callback) {
+    var userCollection = [];
+    var cursor = db.collection('users').find();
+    cursor.each(function(err, doc) {
+        if (doc != null) {
+            userCollection.push(doc);
+        }
+        else {
+            callback(userCollection);
+        }
+    })
+}
+router.route('/savePlayer')
+    .put(function (req, res) {
+        console.log(req.body);
+        MongoClient.connect(url, function (err, db) {
+            assert.equal(null, err);
+            savePlayer(db, req.body, function (user) {
+                res.json(user);
+            })
+        })
+    });
+router.route('/allPlayers')
+    .get(function (req, res) {
+        MongoClient.connect(url, function(err, db) {
+            assert.equal(null, err);
+            findAllPlayers(db, function (users) {
+                db.close();
+                res.json(users);
+            })
+        })
+    })
 router.route('/initPlayer')
     .get(function (req, res) {
         console.log(req.user);
@@ -182,17 +211,6 @@ router.route('/initPlayer')
         MongoClient.connect(url, function (err, db) {
             assert.equal(null, err);
             findPlayer(db, id, function (user) {
-                db.close();
-                res.json(user);
-            })
-        })
-    });
-router.route('/savePlayer')
-    .put(function (req, res) {
-        console.log(req.body);
-         MongoClient.connect(url, function (err, db) {
-            assert.equal(null, err);
-            savePlayer(db, req.body, function (user) {
                 db.close();
                 res.json(user);
             })
