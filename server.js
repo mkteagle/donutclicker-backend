@@ -173,6 +173,18 @@ function insertPlayer(db, user, callback) {
         callback();
     })
 }
+function savePlayer(db, user, callback) {
+    console.log(user);
+    user = {
+        _id: user._id,
+        name: user.name
+
+    };
+      db.collection('users').replaceOne({_id: user._id }, user, function (err, result) {
+
+        callback(user);
+    })
+}
 function checkforDuplicates(db, user, callback) {
     db.collection('users').findOne({'_id': user}, function (err, result) {
         assert.equal(err, null);
@@ -200,6 +212,17 @@ router.route('/initPlayer')
         MongoClient.connect(url, function (err, db) {
             assert.equal(null, err);
             findPlayer(db, id, function (user) {
+                db.close();
+                res.json(user);
+            })
+        })
+    });
+router.route('/savePlayer')
+    .put(function (req, res) {
+        console.log(req.body);
+         MongoClient.connect(url, function (err, db) {
+            assert.equal(null, err);
+            savePlayer(db, req.body, function (user) {
                 db.close();
                 res.json(user);
             })
