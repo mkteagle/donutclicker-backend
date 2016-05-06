@@ -26,22 +26,10 @@
         self.showError = showError;
         self.shuffleArray = shuffleArray;
         self.addPlayer = addPlayer;
-        self.imgArray = [
-            {'img': '../img/hotpinkdonut.png', 'enabled': true},
-            {'img': '../img/bluedonut.png', 'enabled': false},
-            {'img': '../img/greendonut.png', 'enabled': false},
-            {'img': '../img/lightbluedonut.png', 'enabled': false},
-            {'img': '../img/orangedonut.png', 'enabled': false},
-            {'img': '../img/whitedonut.png', 'enabled': false},
-            {'img': '../img/yellowdonut.png', 'enabled': false},
-            {'img': '../img/chocolatedonut.png', 'enabled': false},
-            {'img': '../img/blackdonut.png', 'enabled': false},
-            {'img': '../img/lightpinkdonut.png', 'enabled': false}
-        ];
+       
         function retrievePlayer () {
             self.$http.get('/api/initPlayer').then(function(response){
                 self.user = response.data;
-                console.log(self.user);
             });
             return self.user;
         }
@@ -64,8 +52,6 @@
             cost: 100,
             gcost: 1000
         };
-        self.init = init;
-        init();
         function addPlayer() {
             self.user = {
                 name: '',
@@ -96,10 +82,6 @@
                 content: error
             });
         }
-        function init() {
-            self.shuffleArray();
-        }
-
 
         function showToast() {
             ngToast.create({
