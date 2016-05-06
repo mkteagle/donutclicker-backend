@@ -77,7 +77,6 @@
                 self.user = response.data;
                 self.recorded = self.user.gameplay;
                 self.savePlayer();
-                console.log(self.user);
             });
             self.user.gameplay = self.recorded;
             self.savePlayer();

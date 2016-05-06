@@ -42,8 +42,8 @@ function AppCtrl ($state, gameService, $ionicSideMenuDelegate, $ionicHistory, $h
         location.href = "/logout";
         $ionicSideMenuDelegate.toggleLeft();
         $ionicSideMenuDelegate.canDragContent(false);
-        $ionicHistory.nextViewOptions({historyRoot: true});
-        $state.go('app.login');
+        $ionicHistory.nextViewOptions({historyRoot: false});
+        //$state.go('app.login');
         self.gameService.isLoggedIn = false;
     }
     ////////////////////////////////////////

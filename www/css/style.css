@@ -198,3 +198,21 @@ progress::-webkit-progress-value {
     width: 49.2px;
     height: 49.2px;
 }
+
+.userName {
+  font-size: 25px;
+  padding-top: 50px;
+  text-align: center;
+}
+
+.userPicture {
+  padding-top: 5px;
+  text-align: right;
+  border-radius: 300px;
+  width: 70%;
+  height: 70%;
+}
+
+.menuSide {
+  background-color: #ececec;
+}
