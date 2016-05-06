@@ -4,29 +4,14 @@
                 Back To Game
             </ion-item>
         <h2>Top Players</h2>
-
             <div class="row header">
                 <div class="col">Player</div>
                 <div class="col">Score</div>
             </div>
             <div class="row" ng-repeat="item in gc.allPlayers | toArray | orderBy: '-gameplay.counter' | limitTo:'10'">
-                <div class="col">((item.name | initials}}</div>
-                <div class="col">((item.gameplay.counter}}</div>
+                <div class="col">{{item.name | initials}}</div>
+                <div class="col">{{item.gameplay.counter}}</div>
             </div>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Player</th>
-                <th>Score</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="item in gc.allPlayers | toArray | orderBy:'-gameplay.counter' | limitTo: '10'">
-                <th>{{item.name | initials }}</th>
-                <th>{{item.gameplay.counter}}</th>
-            </tr>
-            </tbody>
-            </table>
         </div>
         </ion-content>
-    </ion-view>
+</ion-view>
