@@ -29,42 +29,37 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api', router);
 var port = (process.env.PORT || 3000);
-
 /////////// GOOGLE LOGIN
 passport.use(new GoogleStrategy({
         clientID: "829492191243-v8ft9f21p29flncurno9h3hgnsealst4.apps.googleusercontent.com",
         clientSecret: "oxzGcR_ic7p3R49XRwPxM79f",
-        callbackURL: "http://52.36.77.51/auth/google/callback"
-    //     callbackURL: "http://localhost:3000/auth/google/callback"
-        profileFields: ['id','displayName', 'name', 'gender', 'photos' ]
+        callbackURL: "http://www.santasdeputies.com/auth/google/callback"
+        //     callbackURL: "http://localhost:3000/auth/google/callback"
     },
     function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
-        MongoClient.connect(url, function (err, db) {
-            assert.equal(null, err);
-            checkforDuplicates(db, profile.id, function (foundUser, user) {
-                if (!foundUser) {
-                    user = {
-                        _id: profile.id,
-                        name: profile.displayName,
-                        picture: profile.photos[0].value,
-                        gameplay: {
-                            counter: 0,
-                            index: 0,
-                            countdown: 1000,
-                            level: '1x',
-                            goal: 1000,
-                            clicker: 0,
-                            grandpa: 0,
-                            cost: 100,
-                            gcost: 1000
-                        }
-                    };
-                    insertPlayer(db, user, function () {
-                        db.close();
-                    })
-                }
-            });
+        checkforDuplicates(profile.id, function (foundUser, user) {
+            if (!foundUser) {
+                user = {
+                    _id: profile.id,
+                    name: profile.displayName,
+                    picture: profile.photos[0].value,
+                    gameplay: {
+                        counter: 0,
+                        index: 0,
+                        countdown: 1000,
+                        level: '1x',
+                        goal: 1000,
+                        clicker: 0,
+                        grandpa: 0,
+                        cost: 100,
+                        gcost: 1000
+                    }
+                };
+                insertPlayer(user, function () {
+                })
+            }
+        });
         done(null, profile);
     }
 ));
@@ -75,45 +70,41 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
     passport.authenticate('google', {failureRedirect: '/index.html#/app/login'}),
     function (req, res) {
-        res.redirect('"http://52.36.77.51/#/app/game');
+        res.redirect('"http://www.santasdeputies.com/#/app/game');
     });
-
 /////////// FACEBOOK LOGIN
 passport.use(new FacebookStrategy({
         clientID: 1517975181838329,
         clientSecret: "c7dcea90211ffb1becb1ae665cb2b33c",
-        callbackURL: "http://52.36.77.51/auth/facebook/callback",
+        callbackURL: "http://www.santasdeputies.com/auth/facebook/callback",
         // callbackURL: "http://localhost:3000/auth/facebook/callback",
         profileFields: ['id', 'displayName', 'email', 'picture.type(large)']
     },
     function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
-        MongoClient.connect(url, function (err, db) {
-            assert.equal(null, err);
-            checkforDuplicates(db, profile.id, function (foundUser, user) {
-            console.log(profile);
-            checkforDuplicates(profile.id, function (foundUser, user) {
-                if (!foundUser) {
-                    user = {
-                        _id: profile.id,
-                        name: profile.displayName,
-                        picture: profile.photos[0].value,
-                        gameplay: {
-                            counter: 0,
-                            index: 0,
-                            countdown: 1000,
-                            level: '1x',
-                            goal: 1000,
-                            clicker: 0,
-                            grandpa: 0,
-                            cost: 100,
-                            gcost: 1000
-                        }
-                    };
-                    insertPlayer(user, function () {
-                    })
-                }
-            });
+        console.log(profile);
+        checkforDuplicates(profile.id, function (foundUser, user) {
+            if (!foundUser) {
+                user = {
+                    _id: profile.id,
+                    name: profile.displayName,
+                    picture: profile.photos[0].value,
+                    gameplay: {
+                        counter: 0,
+                        index: 0,
+                        countdown: 1000,
+                        level: '1x',
+                        goal: 1000,
+                        clicker: 0,
+                        grandpa: 0,
+                        cost: 100,
+                        gcost: 1000
+                    }
+                };
+                insertPlayer(user, function () {
+                })
+            }
+        });
         return done(null, profile);
     }
 ));
@@ -198,7 +189,7 @@ router.route('/allPlayers')
                 res.json(users);
             })
         })
-    })
+    });
 router.route('/initPlayer')
     .get(function (req, res) {
         console.log(req.user);

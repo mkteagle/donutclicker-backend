@@ -24,14 +24,6 @@ angular.module('starter', ['ionic', 'app.ctrl', 'ngToast', 'app.login', 'gameSer
     templateUrl: 'templates/menu.html',
     controller: 'AppCtrl as ac'
   })
-  .state('app.leaderboard', {
-    url: '/leaderboard',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/leaderboard.html'
-      }
-    }
-  })
     .state('app.login', {
       url: '/login',
       views: {
