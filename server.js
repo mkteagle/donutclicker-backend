@@ -123,7 +123,7 @@ app.get('/auth/facebook/callback',
         failureRedirect: '/index.html#/app/login'
     }),
     function (req, res) {
-        res.redirect('http://52.36.77.51/#/app/game');
+        res.redirect('http://www.santasdeputies.com/#/app/game');
     });
 function insertPlayer(db, user, callback) {
     db.collection('users').insertOne(user, function (err, result) {
