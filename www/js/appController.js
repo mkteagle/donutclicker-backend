@@ -19,15 +19,22 @@ function AppCtrl ($state, gameService, $ionicSideMenuDelegate, $ionicHistory, $h
     self.logout = logout;
     self.gameService = gameService;
     self.getUser = gameService.getUser;
-    self.leaderboard = leaderboard;
-
     self.leaderboarded = false;
-
+    self.getUser = getUser;
+    self.$http = $http;
+    self.user = {};
 
     var navIcons = document.getElementsByClassName('ion-navicon');
     for (var i = 0; i < navIcons.length; i++) {
         navIcons.addEventListener('click', function () {
             this.classList.toggle('active');
+        });
+    }
+
+    function getUser() {
+        self.$http.get("/api/initPlayer").then( function(response){
+            self.user = response.data;
+            console.log(self.user);
         });
     }
 
@@ -38,10 +45,6 @@ function AppCtrl ($state, gameService, $ionicSideMenuDelegate, $ionicHistory, $h
         $ionicHistory.nextViewOptions({historyRoot: true});
         $state.go('app.login');
         self.gameService.isLoggedIn = false;
-    }
-    function leaderboard () {
-        self.leaderboarded = true;
-        gameService.leaderboard();
     }
     ////////////////////////////////////////
     // Layout Methods
