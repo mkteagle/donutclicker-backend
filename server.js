@@ -38,27 +38,29 @@ passport.use(new GoogleStrategy({
     },
     function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
-        checkforDuplicates(profile.id, function (foundUser, user) {
-            if (!foundUser) {
-                user = {
-                    _id: profile.id,
-                    name: profile.displayName,
-                    picture: profile.photos[0].value,
-                    gameplay: {
-                        counter: 0,
-                        index: 0,
-                        countdown: 1000,
-                        level: '1x',
-                        goal: 1000,
-                        clicker: 0,
-                        grandpa: 0,
-                        cost: 100,
-                        gcost: 1000
-                    }
-                };
-                insertPlayer(user, function () {
-                })
-            }
+        MongoClient.connect(url, function (err, db) {
+            checkforDuplicates(db, function (foundUser, user) {
+                if (!foundUser) {
+                    user = {
+                        _id: profile.id,
+                        name: profile.displayName,
+                        picture: profile.photos[0].value,
+                        gameplay: {
+                            counter: 0,
+                            index: 0,
+                            countdown: 1000,
+                            level: '1x',
+                            goal: 1000,
+                            clicker: 0,
+                            grandpa: 0,
+                            cost: 100,
+                            gcost: 1000
+                        }
+                    };
+                    insertPlayer(user, function () {
+                    })
+                }
+            });
         });
         done(null, profile);
     }
@@ -83,28 +85,31 @@ passport.use(new FacebookStrategy({
     function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
         console.log(profile);
-        checkforDuplicates(profile.id, function (foundUser, user) {
-            if (!foundUser) {
-                user = {
-                    _id: profile.id,
-                    name: profile.displayName,
-                    picture: profile.photos[0].value,
-                    gameplay: {
-                        counter: 0,
-                        index: 0,
-                        countdown: 1000,
-                        level: '1x',
-                        goal: 1000,
-                        clicker: 0,
-                        grandpa: 0,
-                        cost: 100,
-                        gcost: 1000
-                    }
-                };
-                insertPlayer(user, function () {
-                })
-            }
+        MongoClient.connect(url, function (err, db) {
+            checkforDuplicates(db, function (foundUser, user) {
+                if (!foundUser) {
+                    user = {
+                        _id: profile.id,
+                        name: profile.displayName,
+                        picture: profile.photos[0].value,
+                        gameplay: {
+                            counter: 0,
+                            index: 0,
+                            countdown: 1000,
+                            level: '1x',
+                            goal: 1000,
+                            clicker: 0,
+                            grandpa: 0,
+                            cost: 100,
+                            gcost: 1000
+                        }
+                    };
+                    insertPlayer(user, function () {
+                    })
+                }
+            });
         });
+
         return done(null, profile);
     }
 ));
