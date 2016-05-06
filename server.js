@@ -30,16 +30,18 @@ app.use(passport.session());
 app.use('/api', router);
 var port = (process.env.PORT || 3000);
 /////////// GOOGLE LOGIN
+/////////// GOOGLE LOGIN
 passport.use(new GoogleStrategy({
-        clientID: '1019472639964-pf40bc0dhbrdju3lvktmtct1akfkbvp0.apps.googleusercontent.com',
-        clientSecret: 'qN6f7FlE1m1NBrcgnNq2p-_G',
-        callbackURL: 'http://www.santasdeputies.com/auth/google/callback'
-        //     callbackURL: "http://localhost:3000/auth/google/callback"
+        clientID: "1019472639964-pf40bc0dhbrdju3lvktmtct1akfkbvp0.apps.googleusercontent.com",
+        clientSecret: "qN6f7FlE1m1NBrcgnNq2p-_G",
+        // callbackURL: "http://localhost:3000/auth/google/callback"
+        callbackURL: "http://www.santasdeputies.com/auth/google/callback"
     },
     function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
         MongoClient.connect(url, function (err, db) {
-            checkforDuplicates(db, function (foundUser, user) {
+            assert.equal(null, err);
+            checkforDuplicates(db, profile.id, function (foundUser, user) {
                 if (!foundUser) {
                     user = {
                         _id: profile.id,
@@ -57,7 +59,8 @@ passport.use(new GoogleStrategy({
                             gcost: 1000
                         }
                     };
-                    insertPlayer(user, function () {
+                    insertPlayer(db, user, function () {
+                        db.close();
                     })
                 }
             });
@@ -74,19 +77,20 @@ app.get('/auth/google/callback',
     function (req, res) {
         res.redirect('http://www.santasdeputies.com/#/app/game');
     });
+
 /////////// FACEBOOK LOGIN
 passport.use(new FacebookStrategy({
         clientID: 1517975181838329,
         clientSecret: "c7dcea90211ffb1becb1ae665cb2b33c",
-        callbackURL: "http://www.santasdeputies.com/auth/facebook/callback",
         // callbackURL: "http://localhost:3000/auth/facebook/callback",
+        callbackURL: "http://www.santasdeputies.com/auth/facebook/callback",
         profileFields: ['id', 'displayName', 'email', 'picture.type(large)']
     },
     function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
-        console.log(profile);
-        MongoClient.connect(url, function (err, db) {
-            checkforDuplicates(db, function (foundUser, user) {
+        MongoClient.connect(profile.id, function (err, db) {
+            assert.equal(null, err);
+            checkforDuplicates(db, profile.id, function (foundUser, user) {
                 if (!foundUser) {
                     user = {
                         _id: profile.id,
@@ -104,23 +108,15 @@ passport.use(new FacebookStrategy({
                             gcost: 1000
                         }
                     };
-                    insertPlayer(user, function () {
+                    insertPlayer(db, user, function () {
+                        db.close();
                     })
                 }
             });
         });
-
         return done(null, profile);
     }
 ));
-passport.serializeUser(function (user, done) {
-    done(null, user.id);
-});
-passport.deserializeUser(function (id, done) {
-    done(null, id);
-});
-
-
 app.get('/auth/facebook', passport.authenticate('facebook'));
 app.get('/auth/facebook/callback',
     passport.authenticate('facebook', {
@@ -130,6 +126,13 @@ app.get('/auth/facebook/callback',
     function (req, res) {
         res.redirect('http://www.santasdeputies.com/#/app/game');
     });
+passport.serializeUser(function (user, done) {
+    done(null, user.id);
+});
+passport.deserializeUser(function (id, done) {
+    done(null, id);
+});
+
 function insertPlayer(db, user, callback) {
     db.collection('users').insertOne(user, function (err, result) {
         assert.equal(err, null);
