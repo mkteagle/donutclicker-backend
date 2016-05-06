@@ -72,7 +72,7 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
     passport.authenticate('google', {failureRedirect: '/index.html#/app/login'}),
     function (req, res) {
-        res.redirect('"http://www.santasdeputies.com/#/app/game');
+        res.redirect('http://www.santasdeputies.com/#/app/game');
     });
 /////////// FACEBOOK LOGIN
 passport.use(new FacebookStrategy({
