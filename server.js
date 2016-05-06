@@ -76,6 +76,7 @@ app.get('/auth/google/callback',
     passport.authenticate('google', {failureRedirect: '/index.html#/app/login'}),
     function (req, res) {
         res.redirect('http://www.santasdeputies.com/#/app/game');
+        // res.redirect('http://localhost:3000/#/app/game');
     });
 
 /////////// FACEBOOK LOGIN
@@ -88,7 +89,7 @@ passport.use(new FacebookStrategy({
     },
     function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
-        MongoClient.connect(profile.id, function (err, db) {
+        MongoClient.connect(url, function (err, db) {
             assert.equal(null, err);
             checkforDuplicates(db, profile.id, function (foundUser, user) {
                 if (!foundUser) {
@@ -124,6 +125,7 @@ app.get('/auth/facebook/callback',
         failureRedirect: '/index.html#/app/login'
     }),
     function (req, res) {
+        // res.redirect('http://localhost:3000/#/app/game');
         res.redirect('http://www.santasdeputies.com/#/app/game');
     });
 passport.serializeUser(function (user, done) {
@@ -152,7 +154,7 @@ function checkforDuplicates(db, user, callback) {
         callback(foundUser, user);
     })
 }
-function findPlayer(user, callback) {
+function findPlayer(db, user, callback) {
    db.collection('users').findOne({'_id': user}, function (err, result) {
         assert.equal(err, null);
         user = result;
@@ -202,9 +204,13 @@ router.route('/initPlayer')
     .get(function (req, res) {
         console.log(req.user);
         var id = req.user;
-            findPlayer(id, function (user) {
+        MongoClient.connect(url, function(err, db) {
+            assert.equal(null, err);
+            findPlayer(db, id, function (user) {
+                db.close();
                 res.json(user);
             })
+        })
     });
 
 app.listen(port, function () {
