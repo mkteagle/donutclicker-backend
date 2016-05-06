@@ -30,7 +30,6 @@ function AppCtrl ($state, gameService, $ionicSideMenuDelegate, $ionicHistory, $h
             this.classList.toggle('active');
         });
     }
-
     function getUser() {
         self.$http.get("/api/initPlayer").then( function(response){
             self.user = response.data;
