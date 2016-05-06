@@ -145,13 +145,16 @@
         $interval(function () {
             self.recorded.counter += self.recorded.clicker;
             self.recorded.counter += self.recorded.grandpa;
+            self.user.gameplay = self.recorded;
             self.savePlayer();
             if (self.recorded.countdown <= 0) {
                 self.recorded.countdown = 0;
+                self.user.gameplay = self.recorded;
                 self.savePlayer();
             }
             else {
                 self.recorded.countdown = self.recorded.countdown - self.recorded.clicker - self.recorded.grandpa;
+                self.user.gameplay = self.recorded;
                 self.savePlayer();
             }
 

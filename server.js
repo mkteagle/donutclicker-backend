@@ -10,8 +10,8 @@ var router = express.Router();
 var ObjectId = require('mongodb').ObjectID;
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
-// var url = 'mongodb://localhost:27017/donutclicker';
-var url = 'mongodb://mkteagle:Password01@ds013221.mlab.com:13221/donutclicker';
+var url = 'mongodb://localhost:27017/donutclicker';
+// var url = 'mongodb://mkteagle:Password01@ds013221.mlab.com:13221/donutclicker';
 app.use('/', express.static(__dirname + '/www'));
 app.use('/node_modules', express.static(__dirname + '/node_modules'));
 
@@ -30,12 +30,11 @@ app.use(passport.session());
 app.use('/api', router);
 var port = (process.env.PORT || 3000);
 /////////// GOOGLE LOGIN
-/////////// GOOGLE LOGIN
 passport.use(new GoogleStrategy({
         clientID: "1019472639964-pf40bc0dhbrdju3lvktmtct1akfkbvp0.apps.googleusercontent.com",
         clientSecret: "qN6f7FlE1m1NBrcgnNq2p-_G",
-        // callbackURL: "http://localhost:3000/auth/google/callback"
-        callbackURL: "http://www.santasdeputies.com/auth/google/callback"
+        callbackURL: "http://localhost:3000/auth/google/callback"
+        // callbackURL: "http://www.santasdeputies.com/auth/google/callback"
     },
     function (accessToken, refreshToken, profile, done) {
         console.log("logged in");
@@ -75,16 +74,16 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
     passport.authenticate('google', {failureRedirect: '/index.html#/app/login'}),
     function (req, res) {
-        res.redirect('http://www.santasdeputies.com/#/app/game');
-        // res.redirect('http://localhost:3000/#/app/game');
+        // res.redirect('http://www.santasdeputies.com/#/app/game');
+        res.redirect('http://localhost:3000/#/app/game');
     });
 
 /////////// FACEBOOK LOGIN
 passport.use(new FacebookStrategy({
         clientID: 1517975181838329,
         clientSecret: "c7dcea90211ffb1becb1ae665cb2b33c",
-        // callbackURL: "http://localhost:3000/auth/facebook/callback",
-        callbackURL: "http://www.santasdeputies.com/auth/facebook/callback",
+        callbackURL: "http://localhost:3000/auth/facebook/callback",
+        // callbackURL: "http://www.santasdeputies.com/auth/facebook/callback",
         profileFields: ['id', 'displayName', 'email', 'picture.type(large)']
     },
     function (accessToken, refreshToken, profile, done) {
@@ -125,8 +124,8 @@ app.get('/auth/facebook/callback',
         failureRedirect: '/index.html#/app/login'
     }),
     function (req, res) {
-        // res.redirect('http://localhost:3000/#/app/game');
-        res.redirect('http://www.santasdeputies.com/#/app/game');
+        res.redirect('http://localhost:3000/#/app/game');
+        // res.redirect('http://www.santasdeputies.com/#/app/game');
     });
 passport.serializeUser(function (user, done) {
     done(null, user.id);
@@ -182,10 +181,10 @@ function findAllPlayers(db, callback) {
 }
 router.route('/savePlayer')
     .put(function (req, res) {
-        console.log(req.body);
         MongoClient.connect(url, function (err, db) {
             assert.equal(null, err);
             savePlayer(db, req.body, function (user) {
+                db.close();
                 res.json(user);
             })
         })
@@ -202,7 +201,6 @@ router.route('/allPlayers')
     });
 router.route('/initPlayer')
     .get(function (req, res) {
-        console.log(req.user);
         var id = req.user;
         MongoClient.connect(url, function(err, db) {
             assert.equal(null, err);
@@ -212,7 +210,6 @@ router.route('/initPlayer')
             })
         })
     });
-
 app.listen(port, function () {
     console.log("App listening on port ..." + port);
 });
