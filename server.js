@@ -31,9 +31,9 @@ app.use('/api', router);
 var port = (process.env.PORT || 3000);
 /////////// GOOGLE LOGIN
 passport.use(new GoogleStrategy({
-        clientID: "829492191243-v8ft9f21p29flncurno9h3hgnsealst4.apps.googleusercontent.com",
-        clientSecret: "oxzGcR_ic7p3R49XRwPxM79f",
-        callbackURL: "http://www.santasdeputies.com/auth/google/callback"
+        clientID: '1019472639964-pf40bc0dhbrdju3lvktmtct1akfkbvp0.apps.googleusercontent.com',
+        clientSecret: 'qN6f7FlE1m1NBrcgnNq2p-_G',
+        callbackURL: 'http://www.santasdeputies.com/auth/google/callback'
         //     callbackURL: "http://localhost:3000/auth/google/callback"
     },
     function (accessToken, refreshToken, profile, done) {
